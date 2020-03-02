@@ -1,4 +1,7 @@
 ;;;; Customization for .emacs
+(load "~/sources/proj/proj.el")
+
+(global-set-key (kbd "C-x p") 'open-project)
 (add-hook
  'emacs-lisp-mode-hook
  (lambda ()  

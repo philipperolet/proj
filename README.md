@@ -1,18 +1,16 @@
-Proj: A small project IDE for emacs
+# Proj: A small project IDE for emacs
 
 # Project Management
 ## Todo
 ## Backlog
-- Git the project
-
-### Create the correct workflow
-- lazy list for get-first-common-elt
+- Improve the workflow
 - Refactor mock-files so that it stays in test scope
 - separate tools from proj code
 
 
 
 ## Done
++ Git the project
 #### use second latest file to always display 2 files ####
 
   + change get-rel-file test to account for this
@@ -28,4 +26,5 @@ Proj: A small project IDE for emacs
   - done as a minor mode?
   - version history?
 	- conflicts with git
-- improve your IDE for test/code loop
+
+	
