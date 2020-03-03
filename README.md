@@ -1,5 +1,8 @@
 # Proj: A small project IDE for emacs
 
+Mostly consists of an open-project command and a few customizations.
+
+
 # Project Management
 ## Todo
 ## Backlog

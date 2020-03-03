@@ -1,7 +1,7 @@
 ;;;; Tests for proj
 
-(load "/home/filou/sources/proj/proj.el")
-(load "/home/filou/sources/proj/test-proj-mocks.el")
+(load "src/open-project")
+(load "test/test-proj-mocks")
 
 ;;; Argmax
 
