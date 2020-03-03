@@ -15,7 +15,8 @@
       (delete-other-windows)
       (find-file (concat path dirsep (car files)))
       (if (cdr files) (find-file-other-window (concat path dirsep (cadr files))))
-      (neotree-dir path) ; open browsing tree on the left
+      ;; add project dir to load-path
+      (let ((default-directory (concat path dirsep))) (normal-top-level-add-to-load-path '(".")))
       (other-window 1))))
 
 (defun get-relevant-files (files-list)
