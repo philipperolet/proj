@@ -55,7 +55,11 @@
 
   ;; If there are no project file, return only the latest
   (let ((mock-files (list mock-oldfile mock-newfile mock-olderfile)))
-    (should (equal (get-relevant-files mock-files) '("newfile" "oldfile")))))
+    (should (equal (get-relevant-files mock-files) '("newfile" "oldfile"))))
+  
+  ;; Ignore emacs temp files
+  (let ((mock-files (list mock-oldfile mock-newfile-tilde mock-newfile-hash mock-olderfile)))
+    (should (equal (get-relevant-files mock-files) '("oldfile" "olderfile")))))
 
 
 (ert-deftest compare-files-access-date ()

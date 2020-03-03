@@ -29,15 +29,23 @@
   and the project file (second). If no project file is found the
   2nd most recently edited file is returned instead. If the
   project file is the most recently edited, it comes first and
-  the second most recently edited file is sent second."
-  (let ((no-dir-list (seq-filter (lambda (x) (not (is-dir x))) files-list)))
-    (if (null no-dir-list)
+  the second most recently edited file is sent second. Emacs temp
+  files are ignored."
+  (let ((clean-list (remove-dirs-and-tempfiles files-list)))
+    (if (null clean-list)
 	(list ".")
-      (let ((project-file (get-first-common-element relevant-project-files (mapcar #'car no-dir-list)))
-	    (latest-file-data (argmax no-dir-list #'compare-files-by-access-date)))
+      (let ((project-file (get-first-common-element relevant-project-files (mapcar #'car clean-list)))
+	    (latest-file-data (argmax clean-list #'compare-files-by-access-date)))
 	(let ((2ndlatest-file-data
-	       (argmax (remove latest-file-data no-dir-list) #'compare-files-by-access-date)))
+	       (argmax (remove latest-file-data clean-list) #'compare-files-by-access-date)))
 	  (compute-relevant-files project-file (car latest-file-data) (car 2ndlatest-file-data)))))))
+
+(defun remove-dirs-and-tempfiles (files-list)
+  (seq-filter (lambda (x)
+		(and (not (is-dir x))
+		     (not (string-match "#$" (car x)))
+		     (not (string-match "~$" (car x)))))
+	      files-list))
 
 (defun compute-relevant-files (project-file recent-file recent-file2)
   (cond ((equal project-file recent-file) (list project-file recent-file2))
