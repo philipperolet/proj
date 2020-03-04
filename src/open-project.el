@@ -35,9 +35,9 @@
     (if (null clean-list)
 	(list ".")
       (let ((project-file (get-first-common-element relevant-project-files (mapcar #'car clean-list)))
-	    (latest-file-data (argmax clean-list #'compare-files-by-access-date)))
+	    (latest-file-data (argmax clean-list #'compare-files-by-modif-date)))
 	(let ((2ndlatest-file-data
-	       (argmax (remove latest-file-data clean-list) #'compare-files-by-access-date)))
+	       (argmax (remove latest-file-data clean-list) #'compare-files-by-modif-date)))
 	  (compute-relevant-files project-file (car latest-file-data) (car 2ndlatest-file-data)))))))
 
 (defun remove-dirs-and-tempfiles (files-list)
@@ -56,13 +56,13 @@
   "Returns the first element of list1 that belongs to list2, or nil"
   (car (seq-filter (lambda (x) (member x list2)) list1)))
 
-(defun compare-files-by-access-date (f1 f2)
+(defun compare-files-by-modif-date (f1 f2)
   "Compare file data in form of (filename filename-attributes)
-  and returns the most recently accessed"
+  and returns the most recently modified"
   (cond
    ((not f1) f2)
    ((not f2) f1)
-   ((time-less-p (file-attribute-access-time (cdr f1)) (file-attribute-access-time (cdr f2))) f2)
+   ((time-less-p (file-attribute-modification-time (cdr f1)) (file-attribute-modification-time (cdr f2))) f2)
    (t f1)))
 
 (defun get-path (name)

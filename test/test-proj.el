@@ -62,8 +62,8 @@
     (should (equal (get-relevant-files mock-files) '("oldfile" "olderfile")))))
 
 
-(ert-deftest compare-files-access-date ()
-  (should (equal (compare-files-by-access-date mock-newfile mock-projfile) mock-newfile)))
+(ert-deftest compare-files-modif-date ()
+  (should (equal (compare-files-by-modif-date mock-newfile mock-projfile) mock-newfile)))
 
 (ert-deftest get-first-matching-file ()
   (should (equal (get-first-common-element '("a" "b" "c") '("d" "e" "b" "c" "f")) "b")))
