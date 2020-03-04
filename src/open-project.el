@@ -4,20 +4,31 @@
 (defconst relevant-project-files '("README.md" "project.md"))
 (defconst dirsep "/")
 
+(defconst remove-emacs-temp-files-regexp "[^~#]$")
+
 (defun open-project (name)
-  "Creates a project IDE, with neotree on the project directory & project files opened"
+  "Creates a project IDE, with neotree on the project directory &
+  project files opened (emacs temp files are ignored)"
   (interactive (list (completing-read "Project Name: "
 				      (get-dir-list-from-paths projects-paths)
 				      nil t)))
   
   (let ((path (concat (get-path name) name)))
-    (let ((files (get-relevant-files (directory-files-and-attributes path))))
+    (let ((files (get-relevant-files (dir-files-and-attrs-recursive
+				      path
+				      remove-emacs-temp-files-regexp))))
       (delete-other-windows)
-      (find-file (concat path dirsep (car files)))
-      (if (cdr files) (find-file-other-window (concat path dirsep (cadr files))))
+      (find-file (car files))
+      (if (cdr files) (find-file-other-window (cadr files)))
       ;; add project dir to load-path
       (let ((default-directory (concat path dirsep))) (normal-top-level-add-to-load-path '(".")))
       (other-window 1))))
+
+(defun dir-files-and-attrs-recursive (path regexp)
+  "Like directory files and attributes, but recursively search
+  subdirs and does not include subdirs in result."
+  (seq-map (lambda (file) (cons file (file-attributes file)))
+	   (directory-files-recursively path regexp)))
 
 (defun get-relevant-files (files-list)
   "Returns either one or two files most relevant to a project
@@ -29,23 +40,14 @@
   and the project file (second). If no project file is found the
   2nd most recently edited file is returned instead. If the
   project file is the most recently edited, it comes first and
-  the second most recently edited file is sent second. Emacs temp
-  files are ignored."
-  (let ((clean-list (remove-dirs-and-tempfiles files-list)))
-    (if (null clean-list)
-	(list ".")
-      (let ((project-file (get-first-common-element relevant-project-files (mapcar #'car clean-list)))
-	    (latest-file-data (argmax clean-list #'compare-files-by-modif-date)))
-	(let ((2ndlatest-file-data
-	       (argmax (remove latest-file-data clean-list) #'compare-files-by-modif-date)))
-	  (compute-relevant-files project-file (car latest-file-data) (car 2ndlatest-file-data)))))))
-
-(defun remove-dirs-and-tempfiles (files-list)
-  (seq-filter (lambda (x)
-		(and (not (is-dir x))
-		     (not (string-match "#$" (car x)))
-		     (not (string-match "~$" (car x)))))
-	      files-list))
+  the second most recently edited file is sent second."
+  (if (null files-list)
+      (list ".")
+    (let ((project-file (get-first-common-element relevant-project-files (mapcar #'car files-list)))
+	  (latest-file-data (argmax files-list #'compare-files-by-modif-date)))
+      (let ((2ndlatest-file-data
+	     (argmax (remove latest-file-data files-list) #'compare-files-by-modif-date)))
+	(compute-relevant-files project-file (car latest-file-data) (car 2ndlatest-file-data))))))
 
 (defun compute-relevant-files (project-file recent-file recent-file2)
   (cond ((equal project-file recent-file) (list project-file recent-file2))

@@ -33,11 +33,6 @@
 ;;; get-relevant-files
 
 (ert-deftest get-relevant-files ()
-  ;; if no file in path or only directories, returns only the current dir
-  (let ((only-directories '(("dir1" (t 1)) ("dir2" (t 2))))
-	(empty-list ()))
-    (should (equal (get-relevant-files empty-list) (list ".")))
-    (should (equal (get-relevant-files only-directories) (list "."))))
 
   ;; if there are files, return the most recent first and the project file then
   (let ((mock-files (list mock-oldfile mock-newfile mock-projfile)))
@@ -55,12 +50,7 @@
 
   ;; If there are no project file, return only the latest
   (let ((mock-files (list mock-oldfile mock-newfile mock-olderfile)))
-    (should (equal (get-relevant-files mock-files) '("newfile" "oldfile"))))
-  
-  ;; Ignore emacs temp files
-  (let ((mock-files (list mock-oldfile mock-newfile-tilde mock-newfile-hash mock-olderfile)))
-    (should (equal (get-relevant-files mock-files) '("oldfile" "olderfile")))))
-
+    (should (equal (get-relevant-files mock-files) '("newfile" "oldfile")))))
 
 (ert-deftest compare-files-modif-date ()
   (should (equal (compare-files-by-modif-date mock-newfile mock-projfile) mock-newfile)))
@@ -72,3 +62,20 @@
   (cl-letf (((symbol-function 'directory-files-and-attributes) #'mock-dirfilesandattr))
     (should (equal (get-dir-list-from-paths '("path1" "path2"))
 		   (list '("dir1" "path1") '("dir2" "path1") '("dir3" "path2"))))))
+
+(ert-deftest dir-files-and-attrs-recursive ()
+ 
+  ;; Mock of directory-files-recursively / file-attributes
+  (cl-letf (((symbol-function 'directory-files-recursively) (lambda (p r) '("file1" "file2")))
+	    ((symbol-function 'file-attributes) (lambda (f) '("attr1" 2 3))))
+  ;; Checks that it returns appropriate (filename file-attrs) pairs    
+    (should (equal (dir-files-and-attrs-recursive nil nil)
+		   '(("file1" "attr1" 2 3) ("file2" "attr1" 2 3))))))
+
+(ert-deftest valid-emacs-regexp ()
+  ;;; checks the regexp for emacs temp files work
+  (let ((test-list '("/file1.md" "/home/file2" "file3~" "/#file4" "/truc/#file6.el#")))
+    (should (equal
+	     (seq-filter (lambda (s) (string-match-p remove-emacs-temp-files-regexp s)) test-list)
+	     '("/file1.md" "/home/file2" "/#file4")))))
+
