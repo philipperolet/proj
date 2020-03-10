@@ -1,33 +1,13 @@
-# Proj: A small project IDE for emacs
+# Proj: A few project utilities for emacs
 
-Mostly consists of an open-project command and a few customizations.
+Mostly consists of an open-project command and a few customizations. Can be used as-is or integrated to projectile project functions.
 
+## Functions
+``M-x open-project`` opens recent files for a project, see open-project.el for more details.
 
-# Project Management
-## Todo
-## Backlog
-- Improve the workflow
-- Refactor mock-files so that it stays in test scope
-- separate tools from proj code
+``M-x proj--lisp-load-and-test-all`` for lisp projects, loads all lisp files and runs ert.
 
+Hooks for lisp mode are defined in proj.el
 
-
-## Done
-+ Git the project
-#### use second latest file to always display 2 files ####
-
-  + change get-rel-file test to account for this
-  + update get-rel-file so it does the job
-#### Shortcut for tdd
-+ have a shortcut to save, eval and test at point just like elpy
-+ have a shortcut to run all tests
-
-
-
-## Larger Backlog
-- emacs should autosave correctly
-  - done as a minor mode?
-  - version history?
-	- conflicts with git
-
-	
+## Notes
+This project is at the time not maintained.
