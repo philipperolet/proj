@@ -14,16 +14,19 @@
 				      nil t)))
   
   (let ((path (concat (get-path name) name)))
-    (let ((files (get-relevant-files (dir-files-and-attrs-recursive
-				      path
-				      remove-emacs-temp-files-regexp))))
-      (delete-other-windows)
-      (find-file (car files))
-      (if (cdr files) (find-file-other-window (cadr files)))
-      ;; add project dir to load-path
-      (let ((default-directory (concat path dirsep))) (normal-top-level-add-to-load-path '(".")))
-      (other-window 1))))
+    (open-project-from-path path)))
 
+(defun open-project-from-path (path)
+  (let ((files (get-relevant-files (dir-files-and-attrs-recursive
+				    path
+				    remove-emacs-temp-files-regexp))))
+    (delete-other-windows)
+    (find-file (car files))
+    (if (cdr files) (find-file-other-window (cadr files)))
+    ;; add project dir to load-path
+    (let ((default-directory (concat path dirsep))) (normal-top-level-add-to-load-path '(".")))
+    (other-window 1)))
+  
 (defun dir-files-and-attrs-recursive (path regexp)
   "Like directory files and attributes, but recursively search
   subdirs and does not include subdirs in result."

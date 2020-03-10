@@ -1,4 +1,4 @@
-;;;; A small project IDE for emacs. See README.md for info.
+;;;; A few project utils for emacs. See README.md for info.
 
 ;;; This is the main file providing feature proj, to add
 ;;; in .emacs
@@ -6,7 +6,8 @@
 (load "src/lisp-custom")
 (load "src/open-project")
 
-(global-set-key (kbd "C-x p") 'open-project)
+;; Global key map deactivated for portability
+;; (global-set-key (kbd "C-x p") 'open-project)
 
 (add-hook
  'emacs-lisp-mode-hook
