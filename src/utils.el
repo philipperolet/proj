@@ -2,9 +2,11 @@
 
 (defun proj--dir-files-and-attrs-recursive (path regexp)
   "Like directory files and attributes, but recursively search
-  subdirs and does not include subdirs in result."
+   subdirs and does not include subdirs in result.
+   Also ignores hidden files and dirs."
   (seq-map (lambda (file) (cons file (file-attributes file)))
-	   (directory-files-recursively path regexp)))
+	   (seq-filter (lambda (file) (not (string-match "/\\.\\|^\\." file)))
+		       (directory-files-recursively path regexp))))
 
 (defun proj--get-first-common-element (list1 list2)
   "Returns the first element of list1 that belongs to list2, or nil"

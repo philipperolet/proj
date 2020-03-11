@@ -2,10 +2,8 @@
 
 ## Backlog
 - ignore hidden directories for most recent file display in open project
-- C-c C-t binding for lisp testing (all)
-  - via hook or via projectile? => both work, hook is fine at the time
-- C-c C-c t for test at point
 - hook to open magit always in 2nd window
+- C-c C-c t for test at point
 - add proj-run-interpreter-on-side to open an interpreter
 - projectile cmd to do a grep with dired buffer
 - Refactor mock-files so that it stays in test scope

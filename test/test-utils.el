@@ -38,7 +38,7 @@
     (should (equal (proj--get-dir-list-from-paths '("path1" "path2"))
 		   (list '("dir1" "path1") '("dir2" "path1") '("dir3" "path2"))))))
 
-(ert-deftest proj--dir-files-and-attrs-recursive-- ()
+(ert-deftest proj--dir-files-and-attrs-recursive--base ()
  
   ;; Mock of directory-files-recursively / file-attributes
   (cl-letf (((symbol-function 'directory-files-recursively) (lambda (p r) '("file1" "file2")))
@@ -46,3 +46,15 @@
   ;; Checks that it returns appropriate (filename file-attrs) pairs    
     (should (equal (proj--dir-files-and-attrs-recursive nil nil)
 		   '(("file1" "attr1" 2 3) ("file2" "attr1" 2 3))))))
+
+(ert-deftest proj--dir-files-and-attrs-recursive--ignore-hidden-dir-files ()
+  (cl-letf (((symbol-function 'directory-files-recursively)
+	     (lambda (p r) '("/path/file1.el"
+			     "/.hidden/file2"
+			     "/not.hidden/file3"
+			     "/multiple/.hidden/file4.el"
+			     ".starting.hidden/file5"
+			     ".singlehiddenfile")))
+	    ((symbol-function 'file-attributes) (lambda (f) '("attr1" 2 3))))
+    (should (equal (proj--dir-files-and-attrs-recursive nil nil)
+		   '(("/path/file1.el" "attr1" 2 3) ("/not.hidden/file3" "attr1" 2 3))))))
