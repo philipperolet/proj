@@ -4,9 +4,10 @@
 (defconst relevant-project-files '("README.md" "project.md"))
 (defconst dirsep "/")
 
-(defconst remove-emacs-temp-files-regexp "[^~#]$")
+;; Regexp excluding emacs temp files and hidden files
+(defconst remove-unwanted-files-regexp "^[^\.].*[^~#]$")
 
-(defun open-project (name)
+(defun proj-open (name)
   "Creates a project IDE, with neotree on the project directory &
   project files opened (emacs temp files are ignored)"
   (interactive (list (completing-read "Project Name: "
@@ -14,12 +15,12 @@
 				      nil t)))
   
   (let ((path (concat (get-path name) name)))
-    (open-project-from-path path)))
+    (proj-open-from-path path)))
 
-(defun open-project-from-path (path)
+(defun proj-open-from-path (path)
   (let ((files (get-relevant-files (dir-files-and-attrs-recursive
 				    path
-				    remove-emacs-temp-files-regexp))))
+				    remove-unwanted-files-regexp))))
     (delete-other-windows)
     (find-file (car files))
     (if (cdr files) (find-file-other-window (cadr files)))

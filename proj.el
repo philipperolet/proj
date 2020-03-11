@@ -4,10 +4,10 @@
 ;;; in .emacs
 
 (load "src/lisp-custom")
-(load "src/open-project")
+(load "src/open")
 
 ;; Global key map deactivated for portability
-;; (global-set-key (kbd "C-x p") 'open-project)
+;; (global-set-key (kbd "C-x p") 'proj-open)
 
 (add-hook
  'emacs-lisp-mode-hook

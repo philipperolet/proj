@@ -3,6 +3,7 @@
 ## Backlog
 - refactor el files
   - refactor functions for them to be namespace compliant
+  - separate tools/proj code
   - strict mapping test/impl
   - appropriate shortcut via projectile
 - ignore hidden directories for most recent file display in open project

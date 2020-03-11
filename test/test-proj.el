@@ -1,6 +1,6 @@
 ;;;; Tests for proj
 
-(load "src/open-project")
+(load "src/open")
 (load "test/test-proj-mocks")
 
 ;;; Argmax
@@ -74,8 +74,7 @@
 
 (ert-deftest valid-emacs-regexp ()
   ;;; checks the regexp for emacs temp files work
-  (let ((test-list '("/file1.md" "/home/file2" "file3~" "/#file4" "/truc/#file6.el#")))
+  (let ((test-list '("/file1.md" "/home/file2" "file3~" "/#file4" "/truc/#file6.el#" ".file7")))
     (should (equal
-	     (seq-filter (lambda (s) (string-match-p remove-emacs-temp-files-regexp s)) test-list)
+	     (seq-filter (lambda (s) (string-match-p remove-unwanted-files-regexp s)) test-list)
 	     '("/file1.md" "/home/file2" "/#file4")))))
-
