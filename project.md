@@ -2,10 +2,8 @@
 
 ## Backlog
 - refactor el files
-  - refactor functions for them to be namespace compliant
-  - separate tools/proj code
   - strict mapping test/impl
-  - appropriate shortcut via projectile
+  - appropriate test/impl shortcut via projectile
 - ignore hidden directories for most recent file display in open project
 - C-c C-t binding for lisp testing (all)
   - via hook or via projectile? => both work, hook is fine at the time
@@ -18,6 +16,8 @@
 
 
 ## Done
++ refactor functions for them to be namespace compliant
++ separate tools/proj code
 + Git the project
 #### use second latest file to always display 2 files ####
 
