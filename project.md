@@ -1,12 +1,16 @@
 # Project Management
 
 ## Backlog
+- refactor el files
+  - refactor functions for them to be namespace compliant
+  - strict mapping test/impl
+  - appropriate shortcut via projectile
 - ignore hidden directories for most recent file display in open project
 - C-c C-t binding for lisp testing (all)
   - via hook or via projectile? => both work, hook is fine at the time
 - C-c C-c t for test at point
 - add proj-run-interpreter-on-side to open an interpreter
-- refactor functions for them to be namespace compliant
+
 - Refactor mock-files so that it stays in test scope
 - separate tools from proj code
 
