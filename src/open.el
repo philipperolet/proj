@@ -1,4 +1,4 @@
-;;; proj-open / proj-open-from-path, main functions to open a project
+;;; proj-open / proj-open-from-name, main functions to open a project
 
 (load "src/utils")
 
@@ -9,17 +9,18 @@
 ;; Regexp excluding emacs temp files and hidden files
 (defconst remove-unwanted-files-regexp "^[^\.].*[^~#]$")
 
-(defun proj-open (name)
-  "Creates a project IDE, with neotree on the project directory &
-  project files opened (emacs temp files are ignored)"
+(defun proj-open-from-name (name)
+  "Opens a projet by name, by finding the dir with this name
+   in projects-paths, paths where project directories live."
   (interactive (list (completing-read "Project Name: "
 				      (proj--get-dir-list-from-paths projects-paths)
 				      nil t)))
   
   (let ((path (concat (proj--get-project-path name) name)))
-    (proj-open-from-path path)))
+    (proj-open path)))
 
-(defun proj-open-from-path (path)
+(defun proj-open (path)
+  "Given the project path, opens relevant project files"
   (let ((files (proj--get-relevant-files (proj--dir-files-and-attrs-recursive
 				    path
 				    remove-unwanted-files-regexp))))

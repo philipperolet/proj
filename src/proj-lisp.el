@@ -1,4 +1,4 @@
-;;;; Customization for emacs-lisp-mode
+;;;; Emacs lisp project functions
 
 (defun proj--lisp-test-at-point ()
   (interactive)
@@ -13,6 +13,9 @@
   (proj--lisp-load-tests)
   (ert t))
 
+(defun proj--lisp-run-project ()
+  (load "run"))
+
 (defun proj--lisp-load-sources ()
   (seq-map #'load-file (directory-files-recursively
 			(concat (cdr (project-current)) "src/")
@@ -22,3 +25,13 @@
   (seq-map #'load-file (directory-files-recursively
 			(concat (cdr (project-current)) "test/")
 			".*\.el$")))
+
+
+;;; Hooks in projectile custom project type definition
+;;; require a function returning a function
+
+(defun proj--lisp-load-and-test-all-projectile ()
+  #'proj--lisp-load-and-test-all)
+
+(defun proj--lisp-run-project-projectile ()
+  #'proj--lisp-run-project)
