@@ -3,7 +3,8 @@
 (load "src/utils")
 
 (defconst projects-paths '("~/drafts/" "~/sources/")) ; with trailing separator
-(defconst relevant-project-files '("README.md" "project.md"))
+;; Files to be considered as ``project`` files, in order of most projecty
+(defconst relevant-project-files '("project.md" "README.md"))
 (defconst dirsep "/")
 
 ;; Regexp excluding emacs temp files and hidden files
@@ -38,10 +39,12 @@
   eg. (directory-files-and-attributes) 
 
   Most relevant files are the most recently edited file (first)
-  and the project file (second). If no project file is found the
-  2nd most recently edited file is returned instead. If the
-  project file is the most recently edited, it comes first and
-  the second most recently edited file is sent second."
+  and the project file (second). If multiple project files exist
+  the first in order of relevant-project-files list is chosen.
+  If no project file is found the 2nd most recently edited file
+  is returned instead. If the project file is the most recently
+  edited, it comes second and the second most recently edited file
+  is sent first."
   (if (null files-list)
       (list ".")
     (let ((project-file (proj--get-first-common-element relevant-project-files (mapcar #'car files-list)))
@@ -51,7 +54,7 @@
 	(proj--compute-relevant-files project-file (car latest-file-data) (car 2ndlatest-file-data))))))
 
 (defun proj--compute-relevant-files (project-file recent-file recent-file2)
-  (cond ((equal project-file recent-file) (list project-file recent-file2))
+  (cond ((equal project-file recent-file) (list recent-file2 project-file))
 	((null project-file) (list recent-file recent-file2))
 	(t (list recent-file project-file))))
 

@@ -1,15 +1,17 @@
 # Project Management
 
 ## Backlog
-- ignore hidden directories for most recent file display in open project
+- fix project file opening bug
 - hook to open magit always in 2nd window
-- C-c C-c t for test at point
 - add proj-run-interpreter-on-side to open an interpreter
-- projectile cmd to do a grep with dired buffer
+
+### Icebox
 - Refactor mock-files so that it stays in test scope
-- separate tools from proj code
+- C-c C-c t for test at point
 
 ## Done
++ projectile cmd to do a grep with dired buffer
++ ignore hidden directories for most recent file display in open project
 + refactor el files
   - import projectile stuff in proj, move proj to src
   - create an elisp project type with all the good bindings

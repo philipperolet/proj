@@ -13,12 +13,19 @@
   (let ((mock-files (list mock-oldfile mock-newfile mock-readmefile)))
     (should (equal (proj--get-relevant-files mock-files) '("newfile" "README.md"))))
 
-  ;; If a project file is most recent, return it first, and the second most recent then
+  ;; If a project file is most recent, return it second, and the second most recent first
   (let ((mock-files (list mock-olderfile mock-readmefile)))
-    (should (equal (proj--get-relevant-files mock-files) '("README.md" "olderfile"))))
+    (should (equal (proj--get-relevant-files mock-files) '("olderfile" "README.md"))))
   (let ((mock-files (list mock-oldfile mock-projfile mock-olderfile)))
-    (should (equal (proj--get-relevant-files mock-files) '("project.md" "oldfile"))))
+    (should (equal (proj--get-relevant-files mock-files) '("oldfile" "project.md"))))
 
+  ;; If multiple project files are there, favor the "most projecty" one (1st in list)
+  (let ((mock-files (list mock-oldfile mock-newfile mock-projfile mock-readmefile)))
+    (should (equal (proj--get-relevant-files mock-files) '("newfile" "project.md"))))
+  (let ((mock-files (list mock-oldfile mock-newfile mock-readmefile mock-projfile)))
+    (should (equal (proj--get-relevant-files mock-files) '("newfile" "project.md"))))
+
+  
   ;; If there are no project file, return only the latest
   (let ((mock-files (list mock-oldfile mock-newfile mock-olderfile)))
     (should (equal (proj--get-relevant-files mock-files) '("newfile" "oldfile")))))
