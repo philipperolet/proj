@@ -47,12 +47,22 @@
   is sent first."
   (if (null files-list)
       (list ".")
-    (let ((project-file (proj--get-first-common-element relevant-project-files (mapcar #'car files-list)))
+    (let ((project-file (proj--get-project-file files-list))
 	  (latest-file-data (proj--argmax files-list #'proj--compare-files-by-modif-date)))
       (let ((2ndlatest-file-data
 	     (proj--argmax (remove latest-file-data files-list) #'proj--compare-files-by-modif-date)))
-	(proj--compute-relevant-files project-file (car latest-file-data) (car 2ndlatest-file-data))))))
+	(proj--compute-relevant-files (car project-file) (car latest-file-data) (car 2ndlatest-file-data))))))
 
+(defun proj--get-project-file (files-list)
+  "Returns the first file (with attrs) in files-list whose name is
+   a relevant project file"
+  (let ((project-file-in-files-list
+	 (lambda (project-file)
+	   (seq-find
+	    (lambda (file) (equal (file-name-nondirectory (car file)) project-file))
+	    files-list))))
+    (seq-some project-file-in-files-list relevant-project-files)))
+      
 (defun proj--compute-relevant-files (project-file recent-file recent-file2)
   (cond ((equal project-file recent-file) (list recent-file2 project-file))
 	((null project-file) (list recent-file recent-file2))

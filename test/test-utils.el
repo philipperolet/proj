@@ -30,13 +30,12 @@
 (ert-deftest proj--compare-files-modif-date-- ()
   (should (equal (proj--compare-files-by-modif-date mock-newfile mock-projfile) mock-newfile)))
 
-(ert-deftest proj--get-first-common-elt-- ()
-  (should (equal (proj--get-first-common-element '("a" "b" "c") '("d" "e" "b" "c" "f")) "b")))
-
 (ert-deftest proj--get-dir-list-from-paths-- ()
   (cl-letf (((symbol-function 'directory-files-and-attributes) #'mock-dirfilesandattr))
-    (should (equal (proj--get-dir-list-from-paths '("path1" "path2"))
-		   (list '("dir1" "path1") '("dir2" "path1") '("dir3" "path2"))))))
+    (should (equal (proj--get-dir-list-from-paths '("/project/path/path1" "/project/path/path2"))
+		   (list '("dir1" "/project/path/path1")
+			 '("dir2" "/project/path/path1")
+			 '("dir3" "/project/path/path2"))))))
 
 (ert-deftest proj--dir-files-and-attrs-recursive--base ()
  

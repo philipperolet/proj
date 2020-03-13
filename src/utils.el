@@ -8,10 +8,6 @@
 	   (seq-filter (lambda (file) (not (string-match "/\\.\\|^\\." file)))
 		       (directory-files-recursively path regexp))))
 
-(defun proj--get-first-common-element (list1 list2)
-  "Returns the first element of list1 that belongs to list2, or nil"
-  (car (seq-filter (lambda (x) (member x list2)) list1)))
-
 (defun proj--compare-files-by-modif-date (f1 f2)
   "Compare file data in form of (filename filename-attributes)
   and returns the most recently modified"

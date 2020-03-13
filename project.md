@@ -1,7 +1,7 @@
 # Project Management
 
 ## Backlog
-- fix project file opening bug
+
 - hook to open magit always in 2nd window
 - add proj-run-interpreter-on-side to open an interpreter
 
@@ -10,6 +10,7 @@
 - C-c C-c t for test at point
 
 ## Done
++ fix project file opening bug
 + projectile cmd to do a grep with dired buffer
 + ignore hidden directories for most recent file display in open project
 + refactor el files
