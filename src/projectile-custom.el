@@ -7,6 +7,8 @@
 (define-key projectile-mode-map (kbd "C-c C-t") 'projectile-test-project)
 (define-key projectile-mode-map (kbd "C-c C-r") 'projectile-run-project)
 (define-key projectile-mode-map (kbd "M-p s") 'projectile-grep)
+(define-key projectile-mode-map (kbd "C-c C-z") 'proj-open-elisp-toplevel)
+
 
 (setq projectile-completion-system 'ivy)
 

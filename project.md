@@ -2,14 +2,13 @@
 
 ## Backlog
 
-- hook to open magit always in 2nd window
-- add proj-run-interpreter-on-side to open an interpreter
-
 ### Icebox
+- hook to open magit always in 2nd window
 - Refactor mock-files so that it stays in test scope
 - C-c C-c t for test at point
 
 ## Done
++ add proj-run-interpreter-on-side to open an interpreter
 + fix project file opening bug
 + projectile cmd to do a grep with dired buffer
 + ignore hidden directories for most recent file display in open project

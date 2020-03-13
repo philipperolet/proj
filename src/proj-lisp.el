@@ -27,6 +27,15 @@
 			".*\.el$")))
 
 
+(defun proj-open-elisp-toplevel ()
+  "Opens scratch in a side window for easy lisp eval"
+  (interactive)
+  (if (= (count-windows) 1)
+      (split-window-right)
+    (select-window (frame-first-window)))
+  (other-window 1)
+  (switch-to-buffer "*scratch*"))
+
 ;;; Hooks in projectile custom project type definition
 ;;; require a function returning a function
 
@@ -35,3 +44,4 @@
 
 (defun proj--lisp-run-project-projectile ()
   #'proj--lisp-run-project)
+
