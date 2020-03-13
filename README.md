@@ -1,6 +1,6 @@
 # Proj: A few project utilities for emacs
 
-Mostly consists of an proj-open command and emacs lisp project test/run functions and an elisp project type for projectile. Can be used as-is or integrated to projectile project functions (as done in ``projectile-custom.el``).
+Commands to open projects in a nice way, emacs lisp project test/run functions, and an elisp project type for projectile. Can be used as-is or integrated to projectile project functions (as done in ``projectile-custom.el``).
 
 ## Functions
 ``M-x proj-open / proj-open-from-name`` opens recent files for a project, see open.el for more details.
