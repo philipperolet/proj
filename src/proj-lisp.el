@@ -14,7 +14,7 @@
   (ert t))
 
 (defun proj--lisp-run-project ()
-  (load "run"))
+  (load-file (concat (projectile-project-root) "run.el")))
 
 (defun proj--lisp-load-sources ()
   (seq-map #'load-file (directory-files-recursively
