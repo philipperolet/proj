@@ -1,6 +1,7 @@
 # Project Management
 
 ## Backlog
+- command when running / testing to reset all previous definitions
 
 ### Icebox
 - hook to open magit always in 2nd window

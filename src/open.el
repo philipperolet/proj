@@ -72,3 +72,23 @@
   "Retrives the path of directory `name` from projects-paths"
   (car (seq-filter #'(lambda (dir) (file-directory-p (concat dir name)))
 		   projects-paths)))
+
+(defun proj-open-project-file ()
+  (interactive)
+  (if (> (count-windows) 1) (delete-other-windows))
+  (proj-toggle-mosaic)
+  (other-window 1)
+  (find-file (concat (projectile-project-root) "project.md")))
+
+(defun proj-toggle-mosaic ()
+  (interactive)
+  (if (= (count-windows) 1)
+      (progn
+	(other-window 1)
+	(split-window-right)
+	(other-window 1)
+	(next-buffer)
+	(other-window -1))
+    (neotree-hide)
+    (delete-other-windows)))
+

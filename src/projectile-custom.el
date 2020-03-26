@@ -2,13 +2,13 @@
 
 (require 'projectile)
 
-(define-key projectile-mode-map (kbd "M-p") 'projectile-command-map)
+(define-key projectile-mode-map (kbd "M-j") 'projectile-command-map)
 
 (define-key projectile-mode-map (kbd "C-c C-t") 'projectile-test-project)
 (define-key projectile-mode-map (kbd "C-c C-r") 'projectile-run-project)
-(define-key projectile-mode-map (kbd "M-p s") 'projectile-grep)
+(define-key projectile-mode-map (kbd "M-j s") 'projectile-grep)
 (define-key projectile-mode-map (kbd "C-c C-z") 'proj-open-elisp-toplevel)
-
+(define-key projectile-mode-map (kbd "C-x p") 'proj-open-project-file)
 
 (setq projectile-completion-system 'ivy)
 

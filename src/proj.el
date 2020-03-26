@@ -7,4 +7,6 @@
 (load "src/open")
 (load "src/projectile-custom")
 
+(global-set-key (kbd "<C-dead-acute>") 'proj-toggle-mosaic)
+
 (provide 'proj)
