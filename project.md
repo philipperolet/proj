@@ -9,6 +9,8 @@
 - C-c C-c t for test at point
 
 ## Done
+- change command for projectile test to c-c c-t p
+- autojackin when opening clj files in a leiningen project
 + add proj-run-interpreter-on-side to open an interpreter
 + fix project file opening bug
 + projectile cmd to do a grep with dired buffer

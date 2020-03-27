@@ -4,7 +4,7 @@
 
 (define-key projectile-mode-map (kbd "M-j") 'projectile-command-map)
 
-(define-key projectile-mode-map (kbd "C-c C-t") 'projectile-test-project)
+(define-key projectile-mode-map (kbd "C-c C-t p") 'projectile-test-project)
 (define-key projectile-mode-map (kbd "C-c C-r") 'projectile-run-project)
 (define-key projectile-mode-map (kbd "M-j s") 'projectile-grep)
 (define-key projectile-mode-map (kbd "C-c C-z") 'proj-open-elisp-toplevel)
