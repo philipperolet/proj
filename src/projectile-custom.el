@@ -14,7 +14,7 @@
 
 (setq projectile-project-search-path '("~/drafts/" "~/sources/"))
 
-(setq projectile-switch-project-action #'(lambda () (proj-open (projectile-project-root))))
+(setq projectile-switch-project-action #'(lambda () (proj-open-pfile)))
 
 (projectile-register-project-type 'elisp '("run.el")
 				  :src-dir "src/"

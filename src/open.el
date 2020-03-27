@@ -1,8 +1,8 @@
-;;; proj-open / proj-open-from-name, main functions to open a project
+;;; proj-open-relevant / proj-open-pfile : functions to open a project in different ways
+
 
 (load "src/utils")
 
-(defconst projects-paths '("~/drafts/" "~/sources/")) ; with trailing separator
 ;; Files to be considered as ``project`` files, in order of most projecty
 (defconst relevant-project-files '("project.md" "README.md"))
 (defconst dirsep "/")
@@ -10,18 +10,8 @@
 ;; Regexp excluding emacs temp files and hidden files
 (defconst remove-unwanted-files-regexp "^[^\.].*[^~#]$")
 
-(defun proj-open-from-name (name)
-  "Opens a projet by name, by finding the dir with this name
-   in projects-paths, paths where project directories live."
-  (interactive (list (completing-read "Project Name: "
-				      (proj--get-dir-list-from-paths projects-paths)
-				      nil t)))
-  
-  (let ((path (concat (proj--get-project-path name) name)))
-    (proj-open path)))
-
-(defun proj-open (path)
-  "Given the project path, opens relevant project files"
+(defun proj-open-relevant (path)
+  "Opens a project via relevant project files logic (see proj--get-relevant-files)"
   (let ((files (proj--get-relevant-files (proj--dir-files-and-attrs-recursive
 				    path
 				    remove-unwanted-files-regexp))))
@@ -29,9 +19,17 @@
     (find-file (car files))
     (if (cdr files) (find-file-other-window (cadr files)))
     ;; add project dir to load-path
-    (let ((default-directory (concat path dirsep))) (normal-top-level-add-to-load-path '(".")))
+    (let ((default-directory (concat path dirsep)))
+      (normal-top-level-add-to-load-path '(".")))
     (other-window 1)))
-  
+
+(defun proj-open-pfile ()
+  "Opens a project via project file + magit"
+  (delete-other-windows)
+  (proj-open-project-file)
+  (magit-status)
+  (other-window -1))
+
 (defun proj--get-relevant-files (files-list)
   "Returns either one or two files most relevant to a project
   
@@ -68,16 +66,12 @@
 	((null project-file) (list recent-file recent-file2))
 	(t (list recent-file project-file))))
 
-(defun proj--get-project-path (name)
-  "Retrives the path of directory `name` from projects-paths"
-  (car (seq-filter #'(lambda (dir) (file-directory-p (concat dir name)))
-		   projects-paths)))
-
 (defun proj-open-project-file ()
+  "Opens project.md in the leftmost window"
   (interactive)
-  (if (> (count-windows) 1) (delete-other-windows))
-  (proj-toggle-mosaic)
   (other-window 1)
+  (select-window (or (window-left-child (frame-root-window))
+		     (frame-root-window)))
   (find-file (concat (projectile-project-root) "project.md")))
 
 (defun proj-toggle-mosaic ()

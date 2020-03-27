@@ -1,7 +1,10 @@
 # Project Management
 
+#### ouvrir project.md directement dans la fenêtre principale
+que ce soit via open-project ou via C-x p
+avec magit ou les tests en second
+
 ## Backlog
-- ouvrir project.md directement dans la fenêtre principale avec magit ou les tests en second
 - command when running / testing to reset all previous definitions
 
 ### Icebox

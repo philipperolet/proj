@@ -1,2 +1,2 @@
 (load "src/proj")
-(call-interactively 'proj-open-from-name)
+(call-interactively 'proj-open-relevant)

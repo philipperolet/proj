@@ -3,12 +3,18 @@
 Commands to open projects in a nice way, emacs lisp project test/run functions, and an elisp project type for projectile. Can be used as-is or integrated to projectile project functions (as done in ``projectile-custom.el``).
 
 ## Functions
-``M-x proj-open / proj-open-from-name`` opens recent files for a project, see open.el for more details.
+`proj-open-relevant` opens recent files for a project, `proj-open-pfile` and `proj-open-project-file` open the project file using projectile to find the root
+
+See open.el for more details.
 
 ``M-x proj--lisp-load-and-test-all`` for lisp projects, loads all lisp files and runs ert.
 
 ## Bindings
-As set in ``projectile-custom.el``, C-c C-t used to test project, C-c C-r to run it, and M-p s to grep in it, as well as C-c C-z to open scratch (and thus eval lisp forms) on the left window.
+Shortcuts are set in ``projectile-custom.el`` to:
+- test project
+- run it, 
+- grep in it, 
+- open scratch (and thus eval lisp forms) on the left window
 
 ## Projectile elisp project type
 Emacs lisp projects are deteted by the presence of a ``run.el`` file which should run the project when loaded. ``projectile-run-project`` will run ``run.el``.
