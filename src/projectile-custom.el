@@ -23,4 +23,10 @@
 				  :test-prefix "test-"
 				  :run #'proj--lisp-run-project-projectile)
 
+;; for clojure leiningen projects, redefine test command
+(defun proj-run-cider-tests () (cider-test-run-project-tests nil))
+(plist-put (alist-get 'lein-test projectile-project-types)
+	   'test-command
+	   'proj-run-cider-tests)
+
 (projectile-mode +1)

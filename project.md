@@ -1,6 +1,7 @@
 # Project Management
 
 ## Backlog
+- ouvrir project.md directement dans la fenêtre principale avec magit ou les tests en second
 - command when running / testing to reset all previous definitions
 
 ### Icebox
@@ -9,6 +10,7 @@
 - C-c C-c t for test at point
 
 ## Done
+- brancher projectile lein à cider pour la commande de test**
 - change command for projectile test to c-c c-t p
 - autojackin when opening clj files in a leiningen project
 + add proj-run-interpreter-on-side to open an interpreter
