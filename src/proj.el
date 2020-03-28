@@ -10,6 +10,4 @@
 
 (global-set-key (kbd "<C-dead-acute>") 'proj-toggle-mosaic)
 
-(add-hook 'clojure-mode-hook 'proj-clj-autojackin)
-
 (provide 'proj)
