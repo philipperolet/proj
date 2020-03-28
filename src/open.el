@@ -10,17 +10,18 @@
 
 (setq proj--already-opened-projects ())
 
-(defun proj-open ()
-  "opens projects, executing various actions depending on whether
-  project has already been opened in this session"
-  (if (member (projectile-project-name) proj--already-opened-projects)
-      (proj-open-relevant (projectile-project-root))
-    (add-to-list 'proj--already-opened-projects (projectile-project-name))
-    (proj-open-pfile)))
-  
+(defun proj-open (project-data)
+  "Opens projects, executing various actions depending on whether
+   project has already been opened in this session. project-data
+   is a plist with :root, :name and :type props"
+  (if (member (plist-get project-data :name) proj--already-opened-projects)
+      (proj-open-relevant (plist-get project-data :root))
+    (add-to-list 'proj--already-opened-projects (plist-get project-data :name))
+    (proj-open-pfile (plist-get project-data :root))))
+
 (defun proj-open-relevant (path)
   "Displays relevant project files according to a logic described
-  in proj--get-relevant-files)"
+  in proj--get-relevant-files"
   (let ((files (proj--get-relevant-files (proj--dir-files-and-attrs-recursive
 				    path
 				    remove-unwanted-files-regexp))))
@@ -32,10 +33,10 @@
       (normal-top-level-add-to-load-path '(".")))
     (other-window 1)))
 
-(defun proj-open-pfile ()
+(defun proj-open-pfile (project-root)
   "Displays the project file & magit"
   (delete-other-windows)
-  (proj-open-project-file)
+  (proj-open-project-file project-root)
   (magit-status)
   (other-window -1))
 
@@ -75,17 +76,22 @@
 	((null project-file) (list recent-file recent-file2))
 	(t (list recent-file project-file))))
 
-(defun proj-open-project-file ()
+(defun proj-open-project-file (project-root)
   "Opens project.md in the leftmost window"
   (interactive)
   (other-window 1)
   (select-window (or (window-left-child (frame-root-window))
 		     (frame-root-window)))
-  (let ((project-file (seq-some #'proj--existing-project-file proj--project-files)))
+  (let ((project-file (seq-some
+		       (lambda (f) (proj--existing-project-file project-root f))
+		       proj--project-files)))
     (find-file project-file)))
 
-(defun proj--existing-project-file (project-filename)
-  (let ((fullname (concat (projectile-project-root) project-filename)))
+(defun proj--existing-project-file (project-root filename)
+  "False if filename is not a project file for the project
+   described by project data, otherwise returns the whole path to
+   filename (incl. filename)"
+  (let ((fullname (concat project-root filename)))
     (if (file-exists-p fullname) fullname)))
 
 (defun proj-toggle-mosaic ()

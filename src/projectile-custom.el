@@ -8,13 +8,17 @@
 (define-key projectile-mode-map (kbd "C-c C-r") 'projectile-run-project)
 (define-key projectile-mode-map (kbd "M-j s") 'projectile-grep)
 (define-key projectile-mode-map (kbd "C-c C-z") 'proj-open-elisp-toplevel)
-(define-key projectile-mode-map (kbd "C-x p") 'proj-open-project-file)
+(define-key projectile-mode-map (kbd "C-x p")
+  (lambda () (interactive) (proj-open-project-file (projectile-project-root))))
 
 (setq projectile-completion-system 'ivy)
 
 (setq projectile-project-search-path '("~/drafts/" "~/sources/"))
 
-(setq projectile-switch-project-action #'(lambda () (proj-open)))
+(setq projectile-switch-project-action
+      #'(lambda () (proj-open (list :root (projectile-project-root)
+				    :name (projectile-project-name)
+				    :type (projectile-project-type)))))
 
 (projectile-register-project-type 'elisp '("run.el")
 				  :src-dir "src/"

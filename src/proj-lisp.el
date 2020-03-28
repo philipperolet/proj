@@ -13,8 +13,8 @@
   (proj--lisp-load-tests)
   (ert t))
 
-(defun proj--lisp-run-project ()
-  (load-file (concat (projectile-project-root) "run.el")))
+(defun proj--lisp-run-project (project-root)
+  (load-file (concat (project-root) "run.el")))
 
 (defun proj--lisp-load-sources ()
   (seq-map #'load-file (directory-files-recursively
@@ -43,5 +43,5 @@
   #'proj--lisp-load-and-test-all)
 
 (defun proj--lisp-run-project-projectile ()
-  #'proj--lisp-run-project)
+  (lambda () (proj--lisp-run-project (projectile-project-root))))
 

@@ -1,10 +1,14 @@
 # Project Management
 
+#### Bug when switching to danone-adf
+funcall: Variable binding depth exceeds max-specpdl-size
+
 #### Autojackin lors du lancement de projets clojure
 #### Auto run tests après autojackin
 
 ## Backlog
 - command when running / testing to reset all previous definitions
+- projectile search uses dired buffer
 
 ### Icebox
 - M-. works on specs
@@ -14,6 +18,7 @@
 - open magit always in 2nd window
 
 ## Done
+#### Refactor for testing: push projectile dependency out
 #### use proj--project-files var in proj-open-project-file
 instead of direct "project.md"
 
