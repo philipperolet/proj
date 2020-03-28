@@ -1,6 +1,6 @@
 # Project Management
 
-#### use relevant-project-files var in proj-open-project-file
+#### use proj--project-files var in proj-open-project-file
 instead of direct "project.md"
 
 #### Autojackin lors du lancement de projets clojure

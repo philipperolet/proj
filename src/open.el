@@ -3,7 +3,7 @@
 (load "src/utils")
 
 ;; Files to be considered as ``project`` files, in order of most projecty
-(defconst relevant-project-files '("project.md" "README.md"))
+(defconst proj--project-files '("project.md" "README.md"))
 
 ;; Regexp excluding emacs temp files and hidden files
 (defconst remove-unwanted-files-regexp "^[^\.].*[^~#]$")
@@ -48,7 +48,7 @@
 
   Most relevant files are the most recently edited file (first)
   and the project file (second). If multiple project files exist
-  the first in order of relevant-project-files list is chosen.
+  the first in order of proj--project-files list is chosen.
   If no project file is found the 2nd most recently edited file
   is returned instead. If the project file is the most recently
   edited, it comes second and the second most recently edited file
@@ -69,7 +69,7 @@
 	   (seq-find
 	    (lambda (file) (equal (file-name-nondirectory (car file)) project-file))
 	    files-list))))
-    (seq-some project-file-in-files-list relevant-project-files)))
+    (seq-some project-file-in-files-list proj--project-files)))
       
 (defun proj--compute-relevant-files (project-file recent-file recent-file2)
   (cond ((equal project-file recent-file) (list recent-file2 project-file))
