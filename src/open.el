@@ -9,12 +9,16 @@
 ;; Regexp excluding emacs temp files and hidden files
 (defconst remove-unwanted-files-regexp "^[^\.].*[^~#]$")
 
-(defun proj-open (opening-function &rest args)
-  "opens projects executing various actions depending on
-   projectile project type multiple ways of opening are provided
-   through proj-open-xxx functions"
-  (message "I'm doing stuff")
-  (apply opening-function args))
+(setq proj--already-opened-projects ())
+
+(defun proj-open ()
+  "opens projects, executing various actions depending on whether
+  project has already been opened in this session"
+  (if (member (projectile-project-name) proj--already-opened-projects)
+      (proj-open-relevant (projectile-project-root))
+    (add-to-list 'proj--already-opened-projects (projectile-project-name))
+    (message "opening for the 1st time %s" (projectile-project-name))
+    (proj-open-pfile)))
   
 (defun proj-open-relevant (path)
   "Displays relevant project files according to a logic described
