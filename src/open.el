@@ -4,7 +4,6 @@
 
 ;; Files to be considered as ``project`` files, in order of most projecty
 (defconst relevant-project-files '("project.md" "README.md"))
-(defconst dirsep "/")
 
 ;; Regexp excluding emacs temp files and hidden files
 (defconst remove-unwanted-files-regexp "^[^\.].*[^~#]$")
@@ -30,7 +29,7 @@
     (find-file (car files))
     (if (cdr files) (find-file-other-window (cadr files)))
     ;; add project dir to load-path
-    (let ((default-directory (concat path dirsep)))
+    (let ((default-directory path))
       (normal-top-level-add-to-load-path '(".")))
     (other-window 1)))
 
