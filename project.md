@@ -1,18 +1,26 @@
 # Project Management
 
-#### ouvrir project.md directement dans la fenêtre principale
-que ce soit via open-project ou via C-x p
-avec magit ou les tests en second
+#### use pfile for first-time opening, relevant files for next
+and put back readme as a pfile
+#### Autojackin lors du lancement de projets clojure
+#### Auto run tests après autojackin
 
 ## Backlog
 - command when running / testing to reset all previous definitions
 
 ### Icebox
-- hook to open magit always in 2nd window
-- Refactor mock-files so that it stays in test scope
-- C-c C-c t for test at point
+- M-. works on specs
+- doc available on specs
+- specify interface for code
+
+- open magit always in 2nd window
 
 ## Done
+#### create proj-open responsible for deciding how/when to call proj-relevant/proj-pfile
+#### ouvrir project.md directement dans la fenêtre principale
+que ce soit via open-project ou via C-x p
+avec magit ou les tests en second
+
 - brancher projectile lein à cider pour la commande de test**
 - change command for projectile test to c-c c-t p
 - autojackin when opening clj files in a leiningen project

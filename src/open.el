@@ -1,6 +1,5 @@
-;;; proj-open-relevant / proj-open-pfile : functions to open a project in different ways
-
-
+;;; All functions for custom project opening.
+;;; Main entry point is proj-open
 (load "src/utils")
 
 ;; Files to be considered as ``project`` files, in order of most projecty
@@ -10,8 +9,16 @@
 ;; Regexp excluding emacs temp files and hidden files
 (defconst remove-unwanted-files-regexp "^[^\.].*[^~#]$")
 
+(defun proj-open (opening-function &rest args)
+  "opens projects executing various actions depending on
+   projectile project type multiple ways of opening are provided
+   through proj-open-xxx functions"
+  (message "I'm doing stuff")
+  (apply opening-function args))
+  
 (defun proj-open-relevant (path)
-  "Opens a project via relevant project files logic (see proj--get-relevant-files)"
+  "Displays relevant project files according to a logic described
+  in proj--get-relevant-files)"
   (let ((files (proj--get-relevant-files (proj--dir-files-and-attrs-recursive
 				    path
 				    remove-unwanted-files-regexp))))
@@ -24,7 +31,7 @@
     (other-window 1)))
 
 (defun proj-open-pfile ()
-  "Opens a project via project file + magit"
+  "Displays the project file & magit"
   (delete-other-windows)
   (proj-open-project-file)
   (magit-status)
