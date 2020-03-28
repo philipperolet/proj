@@ -1,8 +1,5 @@
 # Project Management
 
-#### use proj--project-files var in proj-open-project-file
-instead of direct "project.md"
-
 #### Autojackin lors du lancement de projets clojure
 #### Auto run tests après autojackin
 
@@ -17,6 +14,9 @@ instead of direct "project.md"
 - open magit always in 2nd window
 
 ## Done
+#### use proj--project-files var in proj-open-project-file
+instead of direct "project.md"
+
 #### proj-open: use pfile for first-time opening, relevant files for next
 #### create proj-open responsible for deciding how/when to call proj-relevant/proj-pfile
 #### ouvrir project.md directement dans la fenêtre principale

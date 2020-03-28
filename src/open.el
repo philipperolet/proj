@@ -16,7 +16,6 @@
   (if (member (projectile-project-name) proj--already-opened-projects)
       (proj-open-relevant (projectile-project-root))
     (add-to-list 'proj--already-opened-projects (projectile-project-name))
-    (message "opening for the 1st time %s" (projectile-project-name))
     (proj-open-pfile)))
   
 (defun proj-open-relevant (path)
@@ -82,7 +81,12 @@
   (other-window 1)
   (select-window (or (window-left-child (frame-root-window))
 		     (frame-root-window)))
-  (find-file (concat (projectile-project-root) "project.md")))
+  (let ((project-file (seq-some #'proj--existing-project-file proj--project-files)))
+    (find-file project-file)))
+
+(defun proj--existing-project-file (project-filename)
+  (let ((fullname (concat (projectile-project-root) project-filename)))
+    (if (file-exists-p fullname) fullname)))
 
 (defun proj-toggle-mosaic ()
   (interactive)
