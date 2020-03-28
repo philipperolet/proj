@@ -1,7 +1,5 @@
 # Project Management
 
-#### Bug when switching to danone-adf
-funcall: Variable binding depth exceeds max-specpdl-size
 
 #### Autojackin lors du lancement de projets clojure
 #### Auto run tests après autojackin
@@ -18,6 +16,9 @@ funcall: Variable binding depth exceeds max-specpdl-size
 - open magit always in 2nd window
 
 ## Done
+#### Bug when switching to danone-adf
+funcall: Variable binding depth exceeds max-specpdl-size
+
 #### Refactor for testing: push projectile dependency out
 #### use proj--project-files var in proj-open-project-file
 instead of direct "project.md"

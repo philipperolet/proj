@@ -29,11 +29,8 @@
 ;;; file-data as returned by directory-files-and-attributes: (filename attrs)
 (defun proj--is-dir (file-data) (cadr file-data))
 	  
-(defun proj--argmax (listt compare-func &optional acc)
+(defun proj--argmax (listt compare-func)
   "Returns the largest element of the list according to
    compare-func. compare-func must return the largest of 2
-   elements, handling nil values. acc is for internal use only."
-  (if (null listt)
-      acc
-    (let ((current-max (funcall compare-func acc (car listt))))
-      (proj--argmax (cdr listt) compare-func current-max))))
+   elements, handling nil values"
+  (seq-reduce compare-func listt nil))
