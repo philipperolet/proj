@@ -1,6 +1,6 @@
 # Project Management
 #### Branch : Refactor: extract state / side-effects, use render pattern
-- add tag logic to action execution
+
 - create the correct action sequence to do what you initially wanted
 
 #### Autojackin lors du lancement de projets clojure
@@ -19,6 +19,7 @@
 
 ## Done
 #### Branch : Refactor: extract state / side-effects, use render pattern
+- add tag logic to action execution & project type tag
 - create a working version of :relevant action var
 - compute values for action vars only if they are present in action list
 - create functionality for simple action sequences
