@@ -21,21 +21,33 @@
     (proj-open-pfile project-data)))
 
 (defun proj-open-new (project-data)
-  (setq proj--state (plist-put proj--state :project-data project-data))
-  (setq proj--state (plist-put proj--state :action-vars (proj--compute-all-action-vars)))
-  (setq proj--state (plist-put proj--state :tags (proj--compute-project-tags)))
-  (proj--render-opening-actions))
+  ;; sets up state
+  (proj--set :project-data project-data)
+  (proj--set :action-vars (proj--compute-all-action-vars))
+  (proj--set :tags (proj--compute-project-tags))
+
+  ;; runs opening actions
+  (proj--render-opening-actions)
+
+  ;; update opened projects
+  (if (member :first-opened (proj--get :tags))
+      (proj--set :opened-projects
+		 (cons (proj--get :project-data :name) (proj--get :opened-projects)))))
 
 (defun proj--compute-project-tags ()
+  "Computes the list of all tags applicable to the current project"
   (list
    ;; add project type to tags, converting symbol to keyword   
-   (thread-last (plist-get (plist-get proj--state :project-data) :type)
+   (thread-last (proj--get :project-data :type)
      (symbol-name)
      (concat ":")
-     (read))))
+     (read))
+   
+   ;; add :first-opened or :already-opened depending on project
+   (if (member (proj--get :project-data :name) (proj--get :opened-projects))
+       :already-opened
+     :first-opened)))
        
-  (list (read (format ":%s" (symbol-name ()))))
-
 (defun proj--compute-all-action-vars ()
   "Computes all action vars that are mentioned in the action sequence"
   (thread-last proj--actions-seq

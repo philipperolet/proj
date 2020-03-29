@@ -1,7 +1,5 @@
 # Project Management
 #### Branch : Refactor: extract state / side-effects, use render pattern
-
-- add :first-opened / :already-opened tags
 - create the correct action sequence to do what you initially wanted
 
 #### Autojackin lors du lancement de projets clojure
@@ -20,6 +18,7 @@
 
 ## Done
 #### Branch : Refactor: extract state / side-effects, use render pattern
+- add :first-opened / :already-opened tags
 - create proj--get / proj--set actions to modify state
 - add tag logic to action execution & project type tag
 - create a working version of :relevant action var

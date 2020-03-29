@@ -128,3 +128,15 @@
     (proj-open-new '(:root "/" :name "lol" :type blob))
     (should (equal proj--execution-trace
 		   '((a b c))))))
+
+(ert-deftest proj-open--first-opened-already-opened ()
+  (let ((proj--execution-trace nil)
+	(proj--actions-seq (list '((:first-opened) proj-mockfn (a b c))
+				 '((:already-opened) proj-mockfn (1 2)))))
+    (proj-open-new '(:root "/" :name "lol" :type blob))
+    (should (equal proj--execution-trace
+		   '((a b c))))
+    (proj-open-new '(:root "/" :name "lol" :type blob))
+    (should (equal proj--execution-trace
+		   '((1 2) (a b c))))))
+  
