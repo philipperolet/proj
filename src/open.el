@@ -10,15 +10,35 @@
 
 (setq proj--already-opened-projects ())
 
+(setq proj--state (list :project-data nil
+			:opened-projects ()))
+
 (defun proj-open (project-data)
-  "Opens projects, executing various actions depending on whether
-   project has already been opened in this session. project-data
+  "Opens projects, executing various actions depending on project. project-data
    is a plist with :root, :name and :type props"
   (if (member (plist-get project-data :name) proj--already-opened-projects)
       (proj-open-relevant (plist-get project-data :root))
-    (add-to-list 'proj--already-opened-projects (plist-get project-data :name))
-    (proj-open-pfile (plist-get project-data :root))))
+    (proj-open-pfile project-data)))
 
+(defun proj-open-new (project-data)
+  (setq proj--state (plist-put proj--state :project-data project-data))
+  (setq proj--state (plist-put proj--state :action-vars (proj--compute-action-vars)))
+  (proj--render-opening-actions))
+
+(defun proj--compute-action-vars ()
+  '(:relevant-files ("/my-root/newfile" "/my-root/project.md")))
+
+(defun proj--replace-action-vars-in-args (args)
+  (mapcar
+   (lambda (arg)
+     (let ((value (plist-get (plist-get proj--state :action-vars) arg)))
+       (if value value arg)))
+   args))
+  
+(defun proj--render-opening-actions ()
+  (dolist (action proj--actions-seq)
+    (apply (cadr action) (proj--replace-action-vars-in-args (caddr action)))))
+  
 (defun proj-open-relevant (path)
   "Displays relevant project files according to a logic described
   in proj--get-relevant-files"
@@ -33,10 +53,11 @@
       (normal-top-level-add-to-load-path '(".")))
     (other-window 1)))
 
-(defun proj-open-pfile (project-root)
+(defun proj-open-pfile (project-data)
   "Displays the project file & magit"
+  (add-to-list 'proj--already-opened-projects (plist-get project-data :name))
   (delete-other-windows)
-  (proj-open-project-file project-root)
+  (proj-open-project-file (plist-get project-data :root))
   (magit-status)
   (other-window -1))
 
@@ -105,4 +126,3 @@
 	(other-window -1))
     (neotree-hide)
     (delete-other-windows)))
-

@@ -52,3 +52,31 @@
 (ert-deftest proj--get-project-file-- ()
   (let ((mock-files (list mock-oldfile mock-newfile mock-projfile mock-readmefile)))
     (should (equal (proj--get-project-file mock-files) mock-projfile))))
+
+(defun proj-mockfn (&rest args)
+  "Mock function used to test project action execution. When run,
+   it just adds the list of args with which it was executed in
+   proj--execution-trace. Then checking execution went correctly
+   amounts to comparing proj--execution-trace with what was
+   expected. Note: proj--execution-trace is not defined and must
+   be in every test where proj--mockfn is used"
+  (add-to-list 'proj--execution-trace args))
+
+(ert-deftest proj-open--simple-action-list ()
+  ;;; When given a simple action list, runs the given actions
+  (let ((proj--execution-trace nil)
+	(proj--actions-seq (list '(nil proj-mockfn (1)))))
+    (proj-open-new '(:root "/my-root/" :name "pname" :type "my-type"))
+    (should (equal proj--execution-trace '((1)))))
+  (let ((proj--execution-trace nil)
+	(proj--actions-seq (list '(nil proj-mockfn (1 2)) '(nil proj-mockfn (3 4 5)))))
+    (proj-open-new '(:root "/my-root/" :name "pname" :type "my-type"))
+    (should (equal proj--execution-trace '((3 4 5) (1 2))))))
+
+(ert-deftest proj-open--relevant-files-keyword ()
+  (let ((proj--execution-trace nil)
+	(proj--actions-seq (list '(nil proj-mockfn (:relevant-files)))))
+    (proj-open-new '(:root "/my-root/" :name "pname" :type "my-type"))
+    (should (equal proj--execution-trace '((("/my-root/newfile" "/my-root/project.md")))))))
+
+
