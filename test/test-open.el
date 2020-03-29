@@ -74,9 +74,33 @@
     (should (equal proj--execution-trace '((3 4 5) (1 2))))))
 
 (ert-deftest proj-open--relevant-files-keyword ()
-  (let ((proj--execution-trace nil)
-	(proj--actions-seq (list '(nil proj-mockfn (:relevant-files)))))
+  (cl-letf ((proj--execution-trace nil)
+	    (proj--actions-seq (list '(nil proj-mockfn (:relevant-files))))
+	    ((symbol-function 'proj--dir-files-and-attrs-recursive)
+	     (lambda (p r) (list mock-oldfile mock-newfile mock-readmefile mock-projfile))))
     (proj-open-new '(:root "/my-root/" :name "pname" :type "my-type"))
-    (should (equal proj--execution-trace '((("/my-root/newfile" "/my-root/project.md")))))))
+    (should (equal proj--execution-trace
+		     '((("/project/path/newfile" "/project/path/project.md"))))))
 
+  (cl-letf ((proj--execution-trace nil)
+	    (proj--actions-seq (list '(nil proj-mockfn (:relevant-files))))
+	    ((symbol-function 'proj--dir-files-and-attrs-recursive)
+	     (lambda (p r) (list mock-readmefile mock-oldfile))))
+    (proj-open-new '(:root "/my/2ndroot/" :name "pname" :type "my-type"))
+    (should (equal proj--execution-trace
+		   '((("/project/path/oldfile" "/project/path/README.md")))))))
 
+(ert-deftest proj-open--undefined-keyword ()
+  (let ((proj--execution-trace nil)
+	(proj--actions-seq (list '(nil proj-mockfn (:undefined-keyword)))))
+    (should-error (proj-open-new '(:root "/yo/" :name "n" :type "t")))))
+  
+(ert-deftest proj--compute-all-action-vars--test ()
+  (let ((proj--execution-trace nil)
+	(proj--actions-seq (list '(nil proj-mockfn (a b c))
+				 '(nil proj-mockfn (a :k1 :k2))
+				 '(nil proj-mockfn (:k3))
+				 '(nil proj-mockfn (:k2 3 :k3 :k4)))))
+    (should (equal (proj--compute-all-action-vars)
+		   '(:k1 nil :k2 nil :k3 nil :k4 nil)))))
+  

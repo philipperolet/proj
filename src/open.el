@@ -22,17 +22,34 @@
 
 (defun proj-open-new (project-data)
   (setq proj--state (plist-put proj--state :project-data project-data))
-  (setq proj--state (plist-put proj--state :action-vars (proj--compute-action-vars)))
+  (setq proj--state (plist-put proj--state :action-vars (proj--compute-all-action-vars)))
   (proj--render-opening-actions))
 
-(defun proj--compute-action-vars ()
-  '(:relevant-files ("/my-root/newfile" "/my-root/project.md")))
+(defun proj--compute-all-action-vars ()
+  "Computes all action vars that are mentioned in the action sequence"
+  (thread-last proj--actions-seq
+    (mapcar 'caddr) ;; get list of args list of actions
+    (apply #'append) ;; merge in a single list
+    (delete-dups)
+    (seq-filter #'keywordp) ;; action vars are keywords
+    (mapcar (lambda (action-var) (list action-var (proj--compute-action-var action-var))))
+    (apply #'append))) ;; finally merge into a plist
+
+(defun proj--compute-action-var (arg)
+  (cond
+   ((eq arg :relevant-files)
+    (proj--get-relevant-files (proj--dir-files-and-attrs-recursive
+			       (plist-get proj--state :root)
+			       remove-unwanted-files-regexp)))))
 
 (defun proj--replace-action-vars-in-args (args)
   (mapcar
+   ;; either the arg is a keyword and should be replaced or it is a regular arg
    (lambda (arg)
-     (let ((value (plist-get (plist-get proj--state :action-vars) arg)))
-       (if value value arg)))
+     (if (keywordp arg)
+	 (or (plist-get (plist-get proj--state :action-vars) arg)
+	     (error "Action var does not exist."))
+       arg))
    args))
   
 (defun proj--render-opening-actions ()
@@ -43,8 +60,8 @@
   "Displays relevant project files according to a logic described
   in proj--get-relevant-files"
   (let ((files (proj--get-relevant-files (proj--dir-files-and-attrs-recursive
-				    path
-				    remove-unwanted-files-regexp))))
+					  path
+					  remove-unwanted-files-regexp))))
     (delete-other-windows)
     (find-file (car files))
     (if (cdr files) (find-file-other-window (cadr files)))
