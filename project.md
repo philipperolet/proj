@@ -1,6 +1,5 @@
 # Project Management
 #### Branch : Refactor: extract state / side-effects, use render pattern
-- define action sequences
 - create a new version of proj-open working with action sequences (not operational yet)
 - create functionality for simple action sequences
 - create functionality for variables in action vars
@@ -22,6 +21,9 @@
 - open magit always in 2nd window
 
 ## Done
+#### Branch : Refactor: extract state / side-effects, use render pattern
+- define action sequences
+
 #### Bug when switching to danone-adf
 funcall: Variable binding depth exceeds max-specpdl-size
 
