@@ -1,5 +1,11 @@
 # Project Management
-
+#### Branch : Refactor: extract state / side-effects, use render pattern
+- define action sequences
+- create a new version of proj-open working with action sequences (not operational yet)
+- create functionality for simple action sequences
+- create functionality for variables in action vars
+- create a dummy version of :relevant action var
+- create a working version of :relevant action var
 
 #### Autojackin lors du lancement de projets clojure
 #### Auto run tests après autojackin
