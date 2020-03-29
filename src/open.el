@@ -23,7 +23,18 @@
 (defun proj-open-new (project-data)
   (setq proj--state (plist-put proj--state :project-data project-data))
   (setq proj--state (plist-put proj--state :action-vars (proj--compute-all-action-vars)))
+  (setq proj--state (plist-put proj--state :tags (proj--compute-project-tags)))
   (proj--render-opening-actions))
+
+(defun proj--compute-project-tags ()
+  (list
+   ;; add project type to tags, converting symbol to keyword   
+   (thread-last (plist-get (plist-get proj--state :project-data) :type)
+     (symbol-name)
+     (concat ":")
+     (read))))
+       
+  (list (read (format ":%s" (symbol-name ()))))
 
 (defun proj--compute-all-action-vars ()
   "Computes all action vars that are mentioned in the action sequence"
@@ -43,8 +54,10 @@
 			       remove-unwanted-files-regexp)))))
 
 (defun proj--replace-action-vars-in-args (args)
+  "For all args, either the arg is a keyword and should be
+   replaced if it is an action var, or it is a regular arg and
+   should stay the same"
   (mapcar
-   ;; either the arg is a keyword and should be replaced or it is a regular arg
    (lambda (arg)
      (if (keywordp arg)
 	 (or (plist-get (plist-get proj--state :action-vars) arg)
@@ -53,8 +66,11 @@
    args))
   
 (defun proj--render-opening-actions ()
+  "Executes all actions whose tags are in project tags, replacing
+   every action var by its value in the action's argument list."
   (dolist (action proj--actions-seq)
-    (apply (cadr action) (proj--replace-action-vars-in-args (caddr action)))))
+    (if (seq-every-p (lambda (elt) (member elt (plist-get proj--state :tags))) (car action))
+	(apply (cadr action) (proj--replace-action-vars-in-args (caddr action))))))
   
 (defun proj-open-relevant (path)
   "Displays relevant project files according to a logic described
