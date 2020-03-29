@@ -34,3 +34,21 @@
    compare-func. compare-func must return the largest of 2
    elements, handling nil values"
   (seq-reduce compare-func listt nil))
+
+(defun proj--get (prop &rest prop-chain)
+  "Return the value of the given prop (or prop chain for nested
+   properties) in proj--state"
+  (seq-reduce
+   (lambda (plist prop) (plist-get plist prop))
+   (cons prop prop-chain)
+   proj--state))
+
+(defun proj--set (prop prop-or-val &optional val)
+  "Sets the value of the given prop in proj--state. Optionally,
+  sets the value of prop-or-val if it is a nested property of the
+  prop plist"
+  (if (not val)
+      (setq proj--state (plist-put proj--state prop prop-or-val))
+    (setq proj--state
+	  (plist-put proj--state prop (plist-put (proj--get prop) prop-or-val val)))))
+

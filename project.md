@@ -1,6 +1,6 @@
 # Project Management
 #### Branch : Refactor: extract state / side-effects, use render pattern
-- create proj--get / proj--set actions to modify state
+
 - add :first-opened / :already-opened tags
 - create the correct action sequence to do what you initially wanted
 
@@ -20,6 +20,7 @@
 
 ## Done
 #### Branch : Refactor: extract state / side-effects, use render pattern
+- create proj--get / proj--set actions to modify state
 - add tag logic to action execution & project type tag
 - create a working version of :relevant action var
 - compute values for action vars only if they are present in action list
