@@ -1,5 +1,5 @@
 # Project Management
-#### Autojackin lors du lancement de projets clojure
+
 #### Auto run tests après autojackin
 
 ## Backlog
@@ -14,6 +14,8 @@
 - open magit always in 2nd window
 
 ## Done
+- Autojackin lors du lancement de projets clojure
+
 #### Branch : Refactor: extract state / side-effects, use render pattern
 - chg :relevant-files tag to :most-recent-file/:project-file/:2nd-most-relevant
 - create the correct action sequence to do what you initially wanted
