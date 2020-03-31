@@ -1,6 +1,7 @@
 ;;; All functions for custom project opening.
 ;;; Main entry point is proj-open
 (load "src/utils")
+(load "src/actions-sequence")
 
 ;; Files to be considered as ``project`` files, in order of most projecty
 (defconst proj--project-files '("project.md" "README.md"))
@@ -16,11 +17,6 @@
 (defun proj-open (project-data)
   "Opens projects, executing various actions depending on project. project-data
    is a plist with :root, :name and :type props"
-  (if (member (plist-get project-data :name) proj--already-opened-projects)
-      (proj-open-relevant (plist-get project-data :root))
-    (proj-open-pfile project-data)))
-
-(defun proj-open-new (project-data)
   ;; sets up state
   (proj--set :project-data project-data)
   (proj--set :action-vars (proj--compute-all-action-vars))
@@ -33,6 +29,15 @@
   (if (member :first-opened (proj--get :tags))
       (proj--set :opened-projects
 		 (cons (proj--get :project-data :name) (proj--get :opened-projects)))))
+
+(defun proj-open-project-file (project-file)
+  "Opens the project file (i.e. the first available from
+  proj--project-files) in the leftmost window"
+  (interactive)
+  (select-window (or (window-left-child (frame-root-window))
+		     (frame-root-window)))
+  (find-file project-file))
+
 
 (defun proj--compute-project-tags ()
   "Computes the list of all tags applicable to the current project"
@@ -59,11 +64,13 @@
     (apply #'append))) ;; finally merge into a plist
 
 (defun proj--compute-action-var (arg)
-  (cond
-   ((eq arg :relevant-files)
-    (proj--get-relevant-files (proj--dir-files-and-attrs-recursive
-			       (plist-get proj--state :root)
-			       remove-unwanted-files-regexp)))))
+  (let ((files-list (proj--dir-files-and-attrs-recursive
+		     (proj--get :project-data :root)
+		     remove-unwanted-files-regexp)))
+    (cond
+     ((eq arg :most-recent-file) (car (proj--get-relevant-files files-list)))
+     ((eq arg :project-file) (car (proj--get-project-file files-list)))
+     ((eq arg :2nd-most-relevant) (cadr (proj--get-relevant-files files-list))))))
 
 (defun proj--replace-action-vars-in-args (args)
   "For all args, either the arg is a keyword and should be
@@ -73,7 +80,7 @@
    (lambda (arg)
      (if (keywordp arg)
 	 (or (plist-get (plist-get proj--state :action-vars) arg)
-	     (error "Action var does not exist."))
+	     (error "No action var %s. Check actions sequence." arg))
        arg))
    args))
   
@@ -83,28 +90,10 @@
   (dolist (action proj--actions-seq)
     (if (seq-every-p (lambda (elt) (member elt (plist-get proj--state :tags))) (car action))
 	(apply (cadr action) (proj--replace-action-vars-in-args (caddr action))))))
-  
-(defun proj-open-relevant (path)
-  "Displays relevant project files according to a logic described
-  in proj--get-relevant-files"
-  (let ((files (proj--get-relevant-files (proj--dir-files-and-attrs-recursive
-					  path
-					  remove-unwanted-files-regexp))))
-    (delete-other-windows)
-    (find-file (car files))
-    (if (cdr files) (find-file-other-window (cadr files)))
-    ;; add project dir to load-path
-    (let ((default-directory path))
-      (normal-top-level-add-to-load-path '(".")))
-    (other-window 1)))
 
-(defun proj-open-pfile (project-data)
-  "Displays the project file & magit"
-  (add-to-list 'proj--already-opened-projects (plist-get project-data :name))
-  (delete-other-windows)
-  (proj-open-project-file (plist-get project-data :root))
-  (magit-status)
-  (other-window -1))
+(defun proj--add-to-path ()
+  (let ((default-directory (proj--get :project-data :root)))
+    (normal-top-level-add-to-load-path '("."))))
 
 (defun proj--get-relevant-files (files-list)
   "Returns either one or two files most relevant to a project
@@ -141,24 +130,6 @@
   (cond ((equal project-file recent-file) (list recent-file2 project-file))
 	((null project-file) (list recent-file recent-file2))
 	(t (list recent-file project-file))))
-
-(defun proj-open-project-file (project-root)
-  "Opens project.md in the leftmost window"
-  (interactive)
-  (other-window 1)
-  (select-window (or (window-left-child (frame-root-window))
-		     (frame-root-window)))
-  (let ((project-file (seq-some
-		       (lambda (f) (proj--existing-project-file project-root f))
-		       proj--project-files)))
-    (find-file project-file)))
-
-(defun proj--existing-project-file (project-root filename)
-  "False if filename is not a project file for the project
-   described by project data, otherwise returns the whole path to
-   filename (incl. filename)"
-  (let ((fullname (concat project-root filename)))
-    (if (file-exists-p fullname) fullname)))
 
 (defun proj-toggle-mosaic ()
   (interactive)

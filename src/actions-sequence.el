@@ -8,9 +8,21 @@
 ;;; - :{project-type} similarly for any project type
 ;;;
 ;;; If :tags is nil then the function is run :args are optional args
-;;; to the function. Any keyword in args is replaced by the
-;;; corresponding value in the proj--state :actions-var plist.
+;;; to the function. Any keyword in args is considered an "action var"
+;;; and replaced by the corresponding value in the proj--state
+;;; :actions-var plist. Available action vars are:
+;;;
+;;; :most-recent-file
+;;; :project-file
+;;; :2nd-most-relevant -> see proj--get-relevant-file
 
-(setq proj--actions-seq
-      (list
-       '(nil delete-other-windows nil)))
+(setq
+ proj--actions-seq
+ (list
+  '(nil delete-other-windows nil)
+  '(nil proj--add-to-path nil)
+  '((:already-opened) find-file (:most-recent-file))
+  '((:already-opened) find-file-other-window (:2nd-most-relevant))
+  '((:first-opened) proj-open-project-file (:project-file))
+  '((:first-opened) magit-status nil)
+  '(nil other-window (1))))

@@ -66,41 +66,60 @@
   ;;; When given a simple action list, runs the given actions
   (let ((proj--execution-trace nil)
 	(proj--actions-seq (list '(nil proj-mockfn (1)))))
-    (proj-open-new '(:root "/my-root/" :name "pname" :type my-type))
+    (proj-open '(:root "/my-root/" :name "pname" :type my-type))
     (should (equal proj--execution-trace '((1)))))
   (let ((proj--execution-trace nil)
 	(proj--actions-seq (list '(nil proj-mockfn (1 2)) '(nil proj-mockfn (3 4 5)))))
-    (proj-open-new '(:root "/my-root/" :name "pname" :type my-type))
+    (proj-open '(:root "/my-root/" :name "pname" :type my-type))
     (should (equal proj--execution-trace '((3 4 5) (1 2))))))
 
 (ert-deftest proj-open--relevant-files-keyword ()
   (cl-letf ((proj--execution-trace nil)
-	    (proj--actions-seq (list '(nil proj-mockfn (:relevant-files))))
+	    (proj--actions-seq (list '(nil proj-mockfn (:most-recent-file))
+				     '(nil proj-mockfn (:project-file))))
 	    ((symbol-function 'proj--dir-files-and-attrs-recursive)
 	     (lambda (p r) (list mock-oldfile mock-newfile mock-readmefile mock-projfile))))
-    (proj-open-new '(:root "/my-root/" :name "pname" :type my-type))
+    (proj-open '(:root "/my-root/" :name "pname" :type my-type))
     (should (equal proj--execution-trace
-		     '((("/project/path/newfile" "/project/path/project.md"))))))
+		     '(("/project/path/project.md") ("/project/path/newfile")))))
 
   (cl-letf ((proj--execution-trace nil)
-	    (proj--actions-seq (list '(nil proj-mockfn (:relevant-files))))
+	    (proj--actions-seq (list '(nil proj-mockfn (:most-recent-file :project-file))))
 	    ((symbol-function 'proj--dir-files-and-attrs-recursive)
 	     (lambda (p r) (list mock-readmefile mock-oldfile))))
-    (proj-open-new '(:root "/my/2ndroot/" :name "pname" :type t))
+    (proj-open '(:root "/my/2ndroot/" :name "pname" :type t))
     (should (equal proj--execution-trace
-		   '((("/project/path/oldfile" "/project/path/README.md")))))))
+		   '(("/project/path/oldfile" "/project/path/README.md")))))
+
+  (cl-letf ((proj--execution-trace nil)
+	    (proj--actions-seq (list '(nil proj-mockfn (:2nd-most-relevant))))
+	    ((symbol-function 'proj--dir-files-and-attrs-recursive)
+	     (lambda (p r) (list mock-oldfile mock-newfile mock-readmefile mock-projfile))))
+    (proj-open '(:root "/my/2ndroot/" :name "pname" :type t))
+    (should (equal proj--execution-trace
+		   '(("/project/path/project.md")))))
+  
+  (cl-letf ((proj--execution-trace nil)
+	    (proj--actions-seq (list '(nil proj-mockfn (:2nd-most-relevant))))
+	    ((symbol-function 'proj--dir-files-and-attrs-recursive)
+	     (lambda (p r) (list mock-oldfile mock-newfile))))
+    (proj-open '(:root "/my/2ndroot/" :name "pname" :type t))
+    (should (equal proj--execution-trace
+		   '(("/project/path/oldfile"))))))
 
 (ert-deftest proj-open--undefined-keyword ()
   (let ((proj--execution-trace nil)
 	(proj--actions-seq (list '(nil proj-mockfn (:undefined-keyword)))))
-    (should-error (proj-open-new '(:root "/yo/" :name "n" :type t)))))
+    (should-error (proj-open '(:root "/yo/" :name "n" :type t)))))
   
 (ert-deftest proj--compute-all-action-vars--test ()
-  (let ((proj--execution-trace nil)
-	(proj--actions-seq (list '(nil proj-mockfn (a b c))
-				 '(nil proj-mockfn (a :k1 :k2))
-				 '(nil proj-mockfn (:k3))
-				 '(nil proj-mockfn (:k2 3 :k3 :k4)))))
+  (cl-letf ((proj--execution-trace nil)
+	    ((symbol-function 'proj--dir-files-and-attrs-recursive)
+	     (lambda (p r) (list mock-oldfile mock-newfile)))
+	    (proj--actions-seq (list '(nil proj-mockfn (a b c))
+				     '(nil proj-mockfn (a :k1 :k2))
+				     '(nil proj-mockfn (:k3))
+				     '(nil proj-mockfn (:k2 3 :k3 :k4)))))
     (should (equal (proj--compute-all-action-vars)
 		   '(:k1 nil :k2 nil :k3 nil :k4 nil)))))
 
@@ -110,13 +129,13 @@
   (let ((proj--execution-trace nil)
 	(proj--actions-seq (list '(nil proj-mockfn (a b c))
 				 '((:lein-test) proj-mockfn (1 2)))))
-    (proj-open-new '(:root "/" :name "lol" :type lein-test))
+    (proj-open '(:root "/" :name "lol" :type lein-test))
     (should (equal proj--execution-trace
 		   '((1 2) (a b c)))))
   (let ((proj--execution-trace nil)
 	(proj--actions-seq (list '(nil proj-mockfn (a b c))
 				 '((:lein-test) proj-mockfn (1 2)))))
-    (proj-open-new '(:root "/" :name "lol" :type blob))
+    (proj-open '(:root "/" :name "lol" :type blob))
     (should (equal proj--execution-trace
 		   '((a b c))))))
 
@@ -125,7 +144,7 @@
   (let ((proj--execution-trace nil)
 	(proj--actions-seq (list '(nil proj-mockfn (a b c))
 				 '((:hoo) proj-mockfn (1 2)))))
-    (proj-open-new '(:root "/" :name "lol" :type blob))
+    (proj-open '(:root "/" :name "lol" :type blob))
     (should (equal proj--execution-trace
 		   '((a b c))))))
 
@@ -133,10 +152,10 @@
   (let ((proj--execution-trace nil)
 	(proj--actions-seq (list '((:first-opened) proj-mockfn (a b c))
 				 '((:already-opened) proj-mockfn (1 2)))))
-    (proj-open-new '(:root "/" :name "lol" :type blob))
+    (proj-open '(:root "/" :name "lol" :type blob))
     (should (equal proj--execution-trace
 		   '((a b c))))
-    (proj-open-new '(:root "/" :name "lol" :type blob))
+    (proj-open '(:root "/" :name "lol" :type blob))
     (should (equal proj--execution-trace
 		   '((1 2) (a b c))))))
   

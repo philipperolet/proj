@@ -9,7 +9,11 @@
 (define-key projectile-mode-map (kbd "M-j s") 'projectile-grep)
 (define-key projectile-mode-map (kbd "C-c C-z") 'proj-open-elisp-toplevel)
 (define-key projectile-mode-map (kbd "C-x p")
-  (lambda () (interactive) (proj-open-project-file (projectile-project-root))))
+  (lambda () (interactive) (proj-open-project-file
+			    (proj--get-project-file
+			     (proj--dir-files-and-attrs-recursive
+			      (projectile-project-root)
+			      remove-unwanted-files-regexp)))))
 
 (setq projectile-completion-system 'ivy)
 
