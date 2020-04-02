@@ -51,7 +51,12 @@
    ;; add :first-opened or :already-opened depending on project
    (if (member (proj--get :project-data :name) (proj--get :opened-projects))
        :already-opened
-     :first-opened)))
+     :first-opened)
+
+  ;; add git or no-git tag
+  (if (file-directory-p (concat (proj--get :project-data :root) ".git"))
+      :git
+    :no-git)))
        
 (defun proj--compute-all-action-vars ()
   "Computes all action vars that are mentioned in the action sequence"

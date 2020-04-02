@@ -1,8 +1,10 @@
 # Project Management
-
-#### Auto run tests après autojackin
+- Fix proj-open-project-file "Wrong arg"
+- Fix "No action var :project-file"
 
 ## Backlog
+- Complete readme.md with action sequence logic
+- Auto run tests après autojackin
 - command when running / testing to reset all previous definitions
 - projectile search uses dired buffer
 
@@ -14,6 +16,7 @@
 - open magit always in 2nd window
 
 ## Done
+- Fix "not inside a git repo"
 - Autojackin lors du lancement de projets clojure
 
 #### Branch : Refactor: extract state / side-effects, use render pattern

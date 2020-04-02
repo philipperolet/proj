@@ -6,6 +6,7 @@
 ;;; - :already-opened otherwise
 ;;; - :lein-test if the projectile type of the project is lein-test
 ;;; - :{project-type} similarly for any project type
+;;; - :git / :no-git depending on the existence of a .git dir at the root
 ;;;
 ;;; If :tags is nil then the function is run :args are optional args
 ;;; to the function. Any keyword in args is considered an "action var"
@@ -24,6 +25,6 @@
   '((:already-opened) find-file (:most-recent-file))
   '((:already-opened) find-file-other-window (:2nd-most-relevant))
   '((:first-opened) proj-open-project-file (:project-file))
-  '((:first-opened) magit-status nil)
+  '((:git :first-opened) magit-status nil)
   '((:first-opened :lein-test) cider-jack-in (nil))
   '(nil other-window (1))))

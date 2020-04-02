@@ -159,3 +159,16 @@
     (should (equal proj--execution-trace
 		   '((1 2) (a b c))))))
   
+(ert-deftest git-tag ()
+  (cl-letf ((proj--execution-trace nil)
+	    (proj--actions-seq (list '((:git) proj-mockfn ("git"))
+				     '((:no-git) proj-mockfn ("no-git"))))
+	    ((symbol-function 'file-directory-p)
+	     (lambda (file) (if (equal file "/root/p1/.git") t nil))))
+    (proj-open '(:root "/root/p1/" :name "git-project" :type blob))
+    (should (equal proj--execution-trace
+		   '(("git"))))
+    (proj-open '(:root "/root/p2/" :name "no-git-project" :type blob))
+    (should (equal proj--execution-trace
+		   '(("no-git") ("git"))))))
+  
