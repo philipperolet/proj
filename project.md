@@ -1,5 +1,5 @@
 # Project Management
-- Fix proj-open-project-file "Wrong arg"
+
 - Fix "No action var :project-file"
 
 ## Backlog
@@ -16,6 +16,7 @@
 - open magit always in 2nd window
 
 ## Done
+- Fix proj-open-project-file "Wrong arg"
 - Fix "not inside a git repo"
 - Autojackin lors du lancement de projets clojure
 
