@@ -75,7 +75,8 @@
     (cond
      ((eq arg :most-recent-file) (car (proj--get-relevant-files files-list)))
      ((eq arg :project-file) (car (proj--get-project-file files-list)))
-     ((eq arg :2nd-most-relevant) (cadr (proj--get-relevant-files files-list))))))
+     ((eq arg :2nd-most-relevant) (cadr (proj--get-relevant-files files-list)))
+     (t (error "No action var %s. Check actions sequence." arg)))))
 
 (defun proj--replace-action-vars-in-args (args)
   "For all args, either the arg is a keyword and should be
@@ -84,8 +85,7 @@
   (mapcar
    (lambda (arg)
      (if (keywordp arg)
-	 (or (plist-get (plist-get proj--state :action-vars) arg)
-	     (error "No action var %s. Check actions sequence." arg))
+	 (plist-get (plist-get proj--state :action-vars) arg)
        arg))
    args))
   
@@ -123,7 +123,7 @@
 
 (defun proj--get-project-file (files-list)
   "Returns the first file (with attrs) in files-list whose name is
-   a relevant project file"
+   a relevant project file, or nil if none is found."
   (let ((project-file-in-files-list
 	 (lambda (project-file)
 	   (seq-find

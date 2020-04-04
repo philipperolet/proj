@@ -16,6 +16,10 @@
 ;;; :most-recent-file
 ;;; :project-file
 ;;; :2nd-most-relevant -> see proj--get-relevant-file
+;;;
+;;; If an action var does not exist, the program fails. However, if an
+;;; action var exists and resolves to nil, then it is properly
+;;; replaced
 
 (setq
  proj--actions-seq

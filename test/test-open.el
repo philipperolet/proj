@@ -51,7 +51,8 @@
 
 (ert-deftest proj--get-project-file-- ()
   (let ((mock-files (list mock-oldfile mock-newfile mock-projfile mock-readmefile)))
-    (should (equal (proj--get-project-file mock-files) mock-projfile))))
+    (should (equal (proj--get-project-file mock-files) mock-projfile))
+    (should (equal (proj--get-project-file (list mock-oldfile mock-newfile)) nil))))
 
 (defun proj-mockfn (&rest args)
   "Mock function used to test project action execution. When run,
@@ -116,6 +117,8 @@
   (cl-letf ((proj--execution-trace nil)
 	    ((symbol-function 'proj--dir-files-and-attrs-recursive)
 	     (lambda (p r) (list mock-oldfile mock-newfile)))
+	    ((symbol-function 'proj--compute-action-var)
+	     (lambda (arg) ()))
 	    (proj--actions-seq (list '(nil proj-mockfn (a b c))
 				     '(nil proj-mockfn (a :k1 :k2))
 				     '(nil proj-mockfn (:k3))
@@ -171,4 +174,15 @@
     (proj-open '(:root "/root/p2/" :name "no-git-project" :type blob))
     (should (equal proj--execution-trace
 		   '(("no-git") ("git"))))))
-  
+
+(ert-deftest nil-action-var ()
+  ;; should err if action var does not exist, but work if it does exist but resolves to nil
+  (cl-letf ((proj--execution-trace nil)
+	    (proj--actions-seq (list '((:git) proj-mockfn (:no-such-action-var)))))
+    (should-error (proj-open '(:root "/root/2/" :name "proj" :type blob))))
+  (cl-letf ((proj--execution-trace nil)
+	    (proj--actions-seq (list '((:first-opened) proj-mockfn (:project-file))))
+  	    ((symbol-function 'proj--dir-files-and-attrs-recursive) (lambda (var var) ())))
+    (proj-open '(:root "/root/p2/" :name "proj" :type blob))
+    (should (equal proj--execution-trace
+		   '((nil))))))
