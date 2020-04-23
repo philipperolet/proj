@@ -1,6 +1,7 @@
 # Project Management
 
 - Explicit behaviour when project-file is nil
+
 ## Backlog
 - Complete readme.md with action sequence logic
 - Auto run tests après autojackin
@@ -15,6 +16,7 @@
 - open magit always in 2nd window
 
 ## Done
+- remove auto cider-jack-in
 - Fix "No action var :project-file"
 - Fix proj-open-project-file "Wrong arg"
 - Fix "not inside a git repo"
