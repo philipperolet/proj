@@ -17,6 +17,8 @@
 
 (setq projectile-completion-system 'ivy)
 
+(setq projectile-use-git-grep t)
+
 (setq projectile-project-search-path '("~/drafts/" "~/sources/"))
 
 (setq projectile-switch-project-action
