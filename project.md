@@ -16,6 +16,8 @@
 - open magit always in 2nd window
 
 ## Done
+- changed opening project (C-x p) behaviour, opens in current buffer (or with 4 in other buffer)
+- fixed subr-x missing dep 
 - remove auto cider-jack-in
 - Fix "No action var :project-file"
 - Fix proj-open-project-file "Wrong arg"

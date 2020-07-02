@@ -8,12 +8,21 @@
 (define-key projectile-mode-map (kbd "C-c C-r") 'projectile-run-project)
 (define-key projectile-mode-map (kbd "M-j s") 'projectile-grep)
 (define-key projectile-mode-map (kbd "C-c C-z") 'proj-open-elisp-toplevel)
-(define-key projectile-mode-map (kbd "C-x p")
-  (lambda () (interactive) (proj-open-project-file
-			    (car (proj--get-project-file
-				  (proj--dir-files-and-attrs-recursive
-				   (projectile-project-root)
-				   remove-unwanted-files-regexp))))))
+
+(defun proj-open-project-file2 ()
+  (interactive)
+  (find-file
+   (car (proj--get-project-file
+	 (proj--dir-files-and-attrs-recursive
+	  (projectile-project-root)
+	  remove-unwanted-files-regexp)))))
+  
+(define-key projectile-mode-map (kbd "C-x p") 'proj-open-project-file2)
+(define-key projectile-mode-map (kbd "C-x 4 p")
+  (lambda ()
+    (interactive)
+    (other-window 1)
+    (proj-open-project-file2)))
 
 (setq projectile-completion-system 'ivy)
 
