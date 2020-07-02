@@ -1,5 +1,6 @@
 ;;; All functions for custom project opening.
 ;;; Main entry point is proj-open
+(require 'subr-x)
 (load "src/utils")
 (load "src/actions-sequence")
 
