@@ -9,20 +9,23 @@
 (define-key projectile-mode-map (kbd "M-j s") 'projectile-grep)
 (define-key projectile-mode-map (kbd "C-c C-z") 'proj-open-elisp-toplevel)
 
-(defun proj-open-project-file2 ()
-  (interactive)
-  (find-file
-   (car (proj--get-project-file
+(defun proj-current-project-file ()
+  (car (proj--get-project-file
 	 (proj--dir-files-and-attrs-recursive
 	  (projectile-project-root)
-	  remove-unwanted-files-regexp)))))
+	  remove-unwanted-files-regexp))))
   
-(define-key projectile-mode-map (kbd "C-x p") 'proj-open-project-file2)
+(define-key projectile-mode-map (kbd "C-x p")
+  (lambda ()
+    (interactive)
+    (find-file (proj-current-project-file))))
+
 (define-key projectile-mode-map (kbd "C-x 4 p")
   (lambda ()
     (interactive)
-    (other-window 1)
-    (proj-open-project-file2)))
+    (let ((project-file (proj-current-project-file)))
+      (other-window 1)
+      (find-file project-file))))
 
 (setq projectile-completion-system 'ivy)
 
@@ -42,6 +45,7 @@
 				  :test-prefix "test-"
 				  :run #'proj--lisp-run-project-projectile)
 
+
 ;; for clojure leiningen projects, redefine test command
 (defun proj-run-cider-tests () (cider-test-run-project-tests nil))
 (plist-put (alist-get 'lein-test projectile-project-types)
@@ -49,3 +53,5 @@
 	   'proj-run-cider-tests)
 
 (projectile-mode +1)
+
+
