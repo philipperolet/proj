@@ -1,9 +1,11 @@
-# Proj: A few project utilities for emacs
+# Proj: A few project / IDE-like utilities for emacs
 
 Commands to open projects in a nice way, emacs lisp project test/run
 functions, and an elisp project type for projectile. Meant for
 integration to projectile project functions (as done in
 ``projectile-custom.el``).
+
+Also, customizations for clojure projects.
 
 ## Functions
 `proj-open` opens projects, executing various actions depending on whether
