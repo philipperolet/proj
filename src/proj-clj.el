@@ -1,15 +1,6 @@
-;;; proj-clj -- Clojure-specific project features, partly built on cider
-
 ;; -*- lexical-binding: t -*-
+;;; proj-clj -- Clojure-specific project features, partly built on cider
 ;; lexical binding required for proj--refresh-ns-before
-;;; Commentary:
-
-;;; Code:
-(setq cider-repl-display-help-banner nil)
-(setq cider-repl-pop-to-buffer-on-connect nil)
-(setq cider-auto-jump-to-error nil)
-(setq cider-auto-select-error-buffer nil)
-(setq cider-save-file-on-load t)
 (setq cider-save-files-on-cider-ns-refresh t)
 
 (defun autoeval-clojure-buffers ()
@@ -39,12 +30,16 @@ they are visited (in which case they are saved before eval)."
   "Function to advise a command to refresh the project evaluation
 before executing. Using handle-response to catch when the refresh
 is done, since ns-refresh is async."
-  (define-advice cider-ns-refresh--handle-response
-      (:after (resp &rest rst) post-refresh)
-    (when (member "ok" (nrepl-dict-get resp "status"))
-      (apply orig-fn orig-args)
-      (advice-remove 'cider-ns-refresh--handle-response
-		   #'cider-ns-refresh--handle-response@post-refresh)))
+  (let ((command-ns (cider-current-ns)))
+    (define-advice cider-ns-refresh--handle-response
+	(:after (resp &rest rst) post-refresh)
+      (when (member "ok" (nrepl-dict-get resp "status"))
+	;; ns-refresh resets current ns so we need to set it back
+	(cider-set-buffer-ns command-ns) 
+	(message (cider-current-ns))
+	(apply orig-fn orig-args)
+	(advice-remove 'cider-ns-refresh--handle-response
+		       #'cider-ns-refresh--handle-response@post-refresh))))
   (cider-ns-refresh))
 
 ;; All commands of the list below will be advised to refresh before running
@@ -54,7 +49,8 @@ is done, since ns-refresh is async."
 			    cider-test-run-loaded-tests
 			    cider-eval-last-sexp
 			    cider-eval-last-sexp-to-repl
-			    cider-eval-defun-at-point)))
+			    cider-eval-defun-at-point
+			    cider-repl-set-ns)))
   (mapc
    (lambda (symb)
      (advice-add symb :around #'proj--refresh-ns-before))
