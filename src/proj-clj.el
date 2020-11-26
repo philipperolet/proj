@@ -30,28 +30,28 @@ they are visited (in which case they are saved before eval)."
   "Function to advise a command to refresh the project evaluation
 before executing. Using handle-response to catch when the refresh
 is done, since ns-refresh is async."
-  (let ((command-ns (cider-current-ns)))
+  (let ((command-buffer (current-buffer)))
     (define-advice cider-ns-refresh--handle-response
-	(:after (resp &rest rst) post-refresh)
+	(:before (resp &rest rst) post-refresh)
       (when (member "ok" (nrepl-dict-get resp "status"))
-	;; ns-refresh resets current ns so we need to set it back
-	(cider-set-buffer-ns command-ns) 
-	(message (cider-current-ns))
-	(apply orig-fn orig-args)
+	;; ns-refresh uses repl-buffer as current, whereas original command
+	;; probably needs the buffer current at the time it was run
+	(with-current-buffer command-buffer
+	  (apply orig-fn orig-args))
 	(advice-remove 'cider-ns-refresh--handle-response
 		       #'cider-ns-refresh--handle-response@post-refresh))))
   (cider-ns-refresh))
 
 ;; All commands of the list below will be advised to refresh before running
-(let ((commands-to-advise '(cider-test-run-ns-tests
-			    cider-test-run-test
-			    cider-test-run-project-tests
-			    cider-test-run-loaded-tests
-			    cider-eval-last-sexp
-			    cider-eval-last-sexp-to-repl
-			    cider-eval-defun-at-point
-			    cider-repl-set-ns)))
-  (mapc
-   (lambda (symb)
-     (advice-add symb :around #'proj--refresh-ns-before))
-   commands-to-advise))
+(when t (let ((commands-to-advise '(cider-test-run-ns-tests
+				    cider-test-run-test
+				    cider-test-run-project-tests
+				    cider-test-run-loaded-tests
+				    cider-eval-last-sexp
+				    cider-eval-last-sexp-to-repl
+				    cider-repl-set-ns)))
+	  (mapc
+	   (lambda (symb)
+	     (advice-add symb :around #'proj--refresh-ns-before))
+	   commands-to-advise)))
+
