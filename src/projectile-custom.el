@@ -54,4 +54,25 @@
 
 (projectile-mode +1)
 
+;; Tab line and buffer switching
+(defun proj--tab-line-tabs-function ()
+  "Returns file buffer of current project, or if no project, all file buffers."
+  (seq-filter 'buffer-file-name
+	      (condition-case nil
+		  (projectile-project-buffers)
+		(error (buffer-list)))))
 
+(defun proj-cycle-buffers (buffer-cycle-function)
+  "Cycles through acceptable buffers. DIRECTION is either
+  next-buffer or previous-buffer"
+  (let ((buffer-list (proj--tab-line-tabs-function)))
+    (while (not (member (funcall buffer-cycle-function) buffer-list)))))
+
+(global-set-key (kbd "<C-tab>")
+		(lambda ()
+		  (interactive)
+		  (proj-cycle-buffers #'switch-to-prev-buffer)))
+(global-set-key (kbd "<C-dead-grave>")
+		(lambda ()
+		  (interactive)
+		  (proj-cycle-buffers #'switch-to-next-buffer)))
