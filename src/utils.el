@@ -52,3 +52,23 @@
     (setq proj--state
 	  (plist-put proj--state prop (plist-put (proj--get prop) prop-or-val val)))))
 
+(defun proj--xah-convert-file-coding-system (@fpath @coding-system)
+  "Convert file's encoding.
+ *fpath is full path to file.
+ *coding-system is one of 'unix 'dos 'mac or any of accepted emacs coding system. See `list-coding-systems'.
+
+If the file is already opened, it will be saved after this command.
+
+URL `http://ergoemacs.org/emacs/elisp_convert_line_ending.html'
+Version 2015-07-24"
+  (let ($buffer
+        ($bufferOpened-p (get-file-buffer @fpath)))
+    (if $bufferOpened-p
+        (with-current-buffer $bufferOpened-p
+          (set-buffer-file-coding-system @coding-system)
+          (save-buffer))
+      (progn
+        (setq $buffer (find-file @fpath))
+        (set-buffer-file-coding-system @coding-system)
+        (save-buffer)
+        (kill-buffer $buffer)))))
