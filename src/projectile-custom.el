@@ -72,7 +72,22 @@
 		(lambda ()
 		  (interactive)
 		  (proj-cycle-buffers #'switch-to-prev-buffer)))
+
 (global-set-key (kbd "<C-dead-grave>")
 		(lambda ()
 		  (interactive)
 		  (proj-cycle-buffers #'switch-to-next-buffer)))
+
+;; Display internal buffers on right
+(defun proj-display-buffer-right (buffer alist)
+  (if (= (count-windows) 1)
+      (window--display-buffer buffer (split-window-right) 'window alist)
+    (window--display-buffer buffer
+			   (window-in-direction 'right (frame-first-window))
+			   'reuse
+			   alist)))
+
+(setq display-buffer-alist
+      `(("\\*.*" proj-display-buffer-right
+	 (direction . right) (window . root)
+	 (window-parameters . ()))))
