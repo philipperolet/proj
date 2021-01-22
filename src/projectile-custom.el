@@ -57,26 +57,29 @@
 ;; Tab line and buffer switching
 (defun proj--tab-line-tabs-function ()
   "Returns file buffer of current project, or if no project, all file buffers."
-  (seq-filter 'buffer-file-name
-	      (condition-case nil
-		  (projectile-project-buffers)
-		(error (buffer-list)))))
+  (seq-sort-by 'buffer-name 'string-lessp
+	       (seq-filter 'buffer-file-name
+			   (condition-case nil
+			       (projectile-project-buffers)
+			     (error (buffer-list))))))
 
-(defun proj-cycle-buffers (buffer-cycle-function)
-  "Cycles through acceptable buffers. DIRECTION is either
-  next-buffer or previous-buffer"
-  (let ((buffer-list (proj--tab-line-tabs-function)))
-    (while (not (member (funcall buffer-cycle-function) buffer-list)))))
+(defun proj-cycle-buffers (offset)
+  "Cycles through acceptable buffers, switches to the buffer at
+position `current + offset` where offset is a pos or neg int."
+  (let* ((buffers (proj--tab-line-tabs-function))
+	(current-index (seq-position buffers (current-buffer))))
+    (switch-to-buffer
+     (seq-elt buffers (mod (+ current-index offset) (length buffers))))))
 
 (global-set-key (kbd "<C-tab>")
 		(lambda ()
 		  (interactive)
-		  (proj-cycle-buffers #'switch-to-prev-buffer)))
+		  (proj-cycle-buffers 1)))
 
 (global-set-key (kbd "<C-dead-grave>")
 		(lambda ()
 		  (interactive)
-		  (proj-cycle-buffers #'switch-to-next-buffer)))
+		  (proj-cycle-buffers -1)))
 
 ;; Display internal buffers on right
 (defun proj-display-buffer-right (buffer alist)
@@ -87,7 +90,14 @@
 			   'reuse
 			   alist)))
 
+(defun buffer-displayed-right-p (buffer-name action)
+  (let ((excluded-buffers '("*Completions*")))
+    (cond
+     ((member buffer-name excluded-buffers) nil)
+     ((string-prefix-p "*" buffer-name) t)
+     ((string-prefix-p "magit: " buffer-name) t))))
+
 (setq display-buffer-alist
-      `(("\\*.*" proj-display-buffer-right
+      `((buffer-displayed-right-p proj-display-buffer-right
 	 (direction . right) (window . root)
 	 (window-parameters . ()))))

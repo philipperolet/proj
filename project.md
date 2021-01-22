@@ -3,10 +3,28 @@
 - Explicit behaviour when project-file is nil
 
 ## Backlog
+- alt+\ leaves a space
+- notes out puts correctly back on previous buffer
+
 - Complete readme.md with action sequence logic
 - Auto run tests après autojackin
 - command when running / testing to reset all previous definitions
 - projectile search uses dired buffer
+- fix tab mapping between display & cycling
+
+- auto-indent correctly
+- aff. gauche cycle les internes
+- debug - se gère automatiquement (dont stop sur les erreurs)
+  - cucmx, conditional -> in ns-refresh commands
+  - #dbg, #break -> stop using
+  - dbg on err -> special kind of instrumentation
+	- = eval with a macro catching the stuff
+- customize sort of tab line so it works correctly
+- proj-open : sauf les fichiers irrelevants (aka non-user)
+- tab-line : non-projectile tabs grouped together
+- tab should autocomplete
+- clean on commit / on save? (unused imports, etc.)
+- compilation error -> popup
 
 ### Icebox
 - M-. works on specs
@@ -16,6 +34,7 @@
 - open magit always in 2nd window
 
 ## Done
+- magit: on right, exclure completions de l'affichage à droite
 - changed opening project (C-x p) behaviour, opens in current buffer (or with 4 in other buffer)
 - fixed subr-x missing dep 
 - remove auto cider-jack-in
