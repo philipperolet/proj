@@ -1,17 +1,8 @@
 # Project Management
-
 - Explicit behaviour when project-file is nil
 
 ## Backlog
-- alt+\ leaves a space
-- notes out puts correctly back on previous buffer
-
-- Complete readme.md with action sequence logic
-- Auto run tests après autojackin
-- command when running / testing to reset all previous definitions
-- projectile search uses dired buffer
 - fix tab mapping between display & cycling
-
 - auto-indent correctly
 - aff. gauche cycle les internes
 - debug - se gère automatiquement (dont stop sur les erreurs)
@@ -30,10 +21,10 @@
 - M-. works on specs
 - doc available on specs
 - specify interface for code
-
-- open magit always in 2nd window
+- Complete readme.md with action sequence logic
 
 ## Done
+- notes out puts correctly back on previous buffer
 - magit: on right, exclure completions de l'affichage à droite
 - changed opening project (C-x p) behaviour, opens in current buffer (or with 4 in other buffer)
 - fixed subr-x missing dep 

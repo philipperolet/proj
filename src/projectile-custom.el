@@ -9,10 +9,41 @@
 (define-key projectile-mode-map (kbd "M-j s") 'projectile-grep)
 (define-key projectile-mode-map (kbd "C-c C-z") 'proj-open-elisp-toplevel)
 
+
+(defun side-toggle (filename)
+  "Toggles and focus on a buffer with filename on the right side"
+  (if-let ((side-window
+	    (car (seq-filter (lambda (win)
+			       (-> (window-buffer win)
+				   buffer-file-name
+				   (string= filename)))
+			     (window-list)))))
+      (progn
+	(select-window side-window)
+	(cycle-unstarred-buffer -1)
+	(other-window -1))
+    (progn
+      (if (= (count-windows) 1)
+	  (progn
+	    (split-window-right)
+	    (other-window 1))
+	(select-window (window-in-direction 'right (frame-first-window) nil 1)))
+      (find-file filename))))
+
+(global-set-key
+ (kbd "C-M-;")
+ (lambda ()
+   (interactive)
+   (side-toggle "/home/filou/side-notes.md")))
+
 (defun proj-current-project-file ()
   (car (proj--get-project-file
-	 (proj--dir-files-and-attrs-recursive
-	  (projectile-project-root)
+	(proj--dir-files-and-attrs-recursive
+	 (->> (buffer-list)
+	      (seq-map 'buffer-file-name)
+	      (seq-map 'projectile-project-root)
+	      (seq-filter 'identity)
+	      car)
 	  remove-unwanted-files-regexp))))
   
 (define-key projectile-mode-map (kbd "C-x p")
@@ -20,12 +51,12 @@
     (interactive)
     (find-file (proj-current-project-file))))
 
-(define-key projectile-mode-map (kbd "C-x 4 p")
+(global-set-key (kbd "C-M-k")
   (lambda ()
     (interactive)
     (let ((project-file (proj-current-project-file)))
-      (other-window 1)
-      (find-file project-file))))
+      (side-toggle project-file))))
+
 
 (setq projectile-completion-system 'ivy)
 
