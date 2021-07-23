@@ -9,6 +9,9 @@
 (define-key projectile-mode-map (kbd "M-j s") 'projectile-grep)
 (define-key projectile-mode-map (kbd "C-c C-z") 'proj-open-elisp-toplevel)
 
+;; indexing & sorting
+(setq projectile-indexing-method 'hybrid)
+(setq projectile-sort-order 'recently-active)
 
 (defun side-toggle (filename)
   "Toggles and focus on a buffer with filename on the right side"
