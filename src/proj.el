@@ -6,6 +6,7 @@
 (load "src/proj-lisp")
 (load "src/open")
 (load "src/proj-clj")
+(load "src/packages")
 (load "src/projectile-custom")
 
 (global-set-key (kbd "<C-dead-acute>") 'proj-toggle-mosaic)

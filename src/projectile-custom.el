@@ -1,8 +1,8 @@
 ;; Projectile customization using other proj features. Should be loaded last
-
 (require 'projectile)
 
 (define-key projectile-mode-map (kbd "M-j") 'projectile-command-map)
+
 
 (define-key projectile-mode-map (kbd "C-c C-t p") 'projectile-test-project)
 (define-key projectile-mode-map (kbd "C-c C-r") 'projectile-run-project)
@@ -59,7 +59,6 @@
     (interactive)
     (let ((project-file (proj-current-project-file)))
       (side-toggle project-file))))
-
 
 (setq projectile-completion-system 'ivy)
 
@@ -135,3 +134,4 @@ position `current + offset` where offset is a pos or neg int."
       `((buffer-displayed-right-p proj-display-buffer-right
 	 (direction . right) (window . root)
 	 (window-parameters . ()))))
+
