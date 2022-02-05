@@ -43,14 +43,16 @@ is done, since ns-refresh is async."
   (cider-ns-refresh))
 
 ;; All commands of the list below will be advised to refresh before running
+;; Comment or uncomment to activate or deactivate auto refresh
 (when t (let ((commands-to-advise '(cider-test-run-ns-tests
 				    cider-test-run-test
 				    cider-test-run-project-tests
 				    cider-test-rerun-failed-tests
 				    cider-test-run-loaded-tests
-				    cider-eval-last-sexp
-				    cider-eval-last-sexp-to-repl
-				    cider-repl-set-ns)))
+				    ;;cider-eval-last-sexp
+				    ;;cider-eval-last-sexp-to-repl
+				    ;;cider-repl-set-ns
+				    )))
 	  (mapc
 	   (lambda (symb)
 	     (advice-add symb :around #'proj--refresh-ns-before))
