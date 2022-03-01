@@ -30,5 +30,5 @@
   '((:already-opened) find-file-other-window (:2nd-most-relevant))
   '((:first-opened) proj-open-project-file (:project-file))
   '((:git :first-opened) magit-status nil)
-  '((:first-opened :lein-test) cider-jack-in (nil))
+  ;;'((:first-opened :lein-test) cider-jack-in (nil))
   '(nil other-window (1))))
