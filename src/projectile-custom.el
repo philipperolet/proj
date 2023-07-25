@@ -2,12 +2,12 @@
 (require 'projectile)
 
 (define-key projectile-mode-map (kbd "M-j") 'projectile-command-map)
-
-
 (define-key projectile-mode-map (kbd "C-c C-t p") 'projectile-test-project)
 (define-key projectile-mode-map (kbd "C-c C-r") 'projectile-run-project)
 (define-key projectile-mode-map (kbd "M-j s") 'projectile-grep)
 (define-key projectile-mode-map (kbd "C-c C-z") 'proj-open-elisp-toplevel)
+
+(setq projectile-require-project-root nil)
 
 ;; indexing & sorting
 (setq projectile-indexing-method 'hybrid)
@@ -17,9 +17,7 @@
   "Toggles and focus on a buffer with filename on the right side"
   (if-let ((side-window
 	    (car (seq-filter (lambda (win)
-			       (-> (window-buffer win)
-				   buffer-file-name
-				   (string= filename)))
+			       (string= (buffer-file-name (window-buffer win)) filename))
 			     (window-list)))))
       (progn
 	(select-window side-window)
@@ -37,7 +35,13 @@
  (kbd "C-M-;")
  (lambda ()
    (interactive)
-   (side-toggle "/home/filou/side-notes.md")))
+   (side-toggle "/home/filou/drafts/main/side-notes.md")))
+
+(global-set-key
+ (kbd "C-M-K")
+ (lambda ()
+   (interactive)
+   (side-toggle "/home/filou/drafts/main/project.md")))
 
 (defun proj-current-project-file ()
   (car (proj--get-project-file
@@ -47,18 +51,18 @@
 	      (seq-map 'projectile-project-root)
 	      (seq-filter 'identity)
 	      car)
-	  remove-unwanted-files-regexp))))
+	 remove-unwanted-files-regexp))))
   
 (define-key projectile-mode-map (kbd "C-x p")
   (lambda ()
     (interactive)
     (find-file (proj-current-project-file))))
 
-(global-set-key (kbd "C-M-k")
-  (lambda ()
-    (interactive)
-    (let ((project-file (proj-current-project-file)))
-      (side-toggle project-file))))
+[(global-set-key (kbd "C-M-k")
+		  (lambda ()
+		    (interactive)
+		    (let ((project-file (proj-current-project-file)))
+		      (side-toggle project-file))))]
 
 (setq projectile-completion-system 'ivy)
 
@@ -84,54 +88,53 @@
 (plist-put (alist-get 'lein-test projectile-project-types)
 	   'test-command
 	   'proj-run-cider-tests)
-
 (projectile-mode +1)
 
-;; Tab line and buffer switching
-(defun proj--tab-line-tabs-function ()
-  "Returns file buffer of current project, or if no project, all file buffers."
-  (seq-sort-by 'buffer-name 'string-lessp
-	       (seq-filter 'buffer-file-name
-			   (condition-case nil
-			       (projectile-project-buffers)
-			     (error (buffer-list))))))
 
-(defun proj-cycle-buffers (offset)
-  "Cycles through acceptable buffers, switches to the buffer at
+ ;; Tab line and buffer switching
+[ (defun proj--tab-line-tabs-function ()
+   "Returns file buffer of current project, or if no project, all file buffers."
+   (seq-sort-by 'buffer-name 'string-lessp
+		(seq-filter 'buffer-file-name
+			    (condition-case nil
+				(projectile-project-buffers)
+			      (error (buffer-list))))))
+
+ (defun proj-cycle-buffers (offset)
+   "Cycles through acceptable buffers, switches to the buffer at
 position `current + offset` where offset is a pos or neg int."
-  (let* ((buffers (proj--tab-line-tabs-function))
-	(current-index (seq-position buffers (current-buffer))))
-    (switch-to-buffer
-     (seq-elt buffers (mod (+ current-index offset) (length buffers))))))
+   (let* ((buffers (proj--tab-line-tabs-function))
+	  (current-index (seq-position buffers (current-buffer))))
+     (switch-to-buffer
+      (seq-elt buffers (mod (+ current-index offset) (length buffers))))))
 
-(global-set-key (kbd "<C-tab>")
-		(lambda ()
-		  (interactive)
-		  (proj-cycle-buffers 1)))
+ (global-set-key (kbd "<C-tab>")
+		 (lambda ()
+		   (interactive)
+		   (proj-cycle-buffers 1)))
 
-(global-set-key (kbd "<C-dead-grave>")
-		(lambda ()
-		  (interactive)
-		  (proj-cycle-buffers -1)))
+ (global-set-key (kbd "<C-dead-grave>")
+		 (lambda ()
+		   (interactive)
+		   (proj-cycle-buffers -1)))
 
-;; Display internal buffers on right
-(defun proj-display-buffer-right (buffer alist)
-  (if (= (count-windows) 1)
-      (window--display-buffer buffer (split-window-right) 'window alist)
-    (window--display-buffer buffer
-			   (window-in-direction 'right (frame-first-window))
-			   'reuse
-			   alist)))
+ ;; Display internal buffers on right
+ (defun proj-display-buffer-right (buffer alist)
+     (if (= (count-windows) 1)
+	 (window--display-buffer buffer (split-window-right) 'window alist)
+       (window--display-buffer buffer
+			       (window-in-direction 'right (frame-first-window))
+			       'reuse
+			       alist)))
 
-(defun buffer-displayed-right-p (buffer-name action)
-  (let ((excluded-buffers '("*Completions*")))
-    (cond
-     ((member buffer-name excluded-buffers) nil)
-     ((string-prefix-p "*" buffer-name) t)
-     ((string-prefix-p "magit: " buffer-name) t))))
+ (defun buffer-displayed-right-p (buffer-name action)
+   (let ((excluded-buffers '("*Completions*")))
+     (cond
+      ((member buffer-name excluded-buffers) nil)
+      ((string-prefix-p "*" buffer-name) t)
+      ((string-prefix-p "magit: " buffer-name) t))))
 
-(setq display-buffer-alist
-      `((buffer-displayed-right-p proj-display-buffer-right
-	 (direction . right) (window . root)
-	 (window-parameters . ()))))
-
+ (setq display-buffer-alist
+       `((buffer-displayed-right-p proj-display-buffer-right
+				   (direction . right) (window . root)
+				   (window-parameters . ()))))]

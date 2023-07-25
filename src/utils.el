@@ -1,12 +1,14 @@
 ;;;; A few util functions for proj
-
 (defun proj--dir-files-and-attrs-recursive (path regexp)
   "Like directory files and attributes, but recursively search
    subdirs and does not include subdirs in result.
    Also ignores hidden files and dirs."
   (seq-map (lambda (file) (cons file (file-attributes file)))
 	   (seq-filter (lambda (file) (not (string-match "/\\.\\|^\\." file)))
-		       (directory-files-recursively path regexp))))
+		       (directory-files-recursively path regexp nil
+						    (lambda (dir)
+						      (and (not (string-match "node_modules$" dir))
+							   (not (string-match "/.git$" dir))))))))
 
 (defun proj--compare-files-by-modif-date (f1 f2)
   "Compare file data in form of (filename filename-attributes)
